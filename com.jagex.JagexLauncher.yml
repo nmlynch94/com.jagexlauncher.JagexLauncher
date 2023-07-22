@@ -1,0 +1,90 @@
+app-id: com.jagex.JagexLauncher
+sdk: org.gnome.Sdk
+runtime: org.gnome.Platform
+runtime-version: '44'
+command: jagex-run
+base: org.winehq.Wine
+base-version: stable-22.08
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --device=all
+  - --share=network
+  - --allow=multiarch
+  - --allow=devel
+  - --talk-name=org.gnome.Mutter.DisplayConfig
+  - --system-talk-name=org.freedesktop.UDisks2
+  - --filesystem=home
+  - --filesystem=/run/media
+  # For Debian
+  - --filesystem=/media
+  - --filesystem=~/.var/app/com.valvesoftware.Steam:ro
+  - --env=PATH=/app/bin:/usr/bin:/app/utils/bin:/usr/lib/extensions/vulkan/MangoHud/bin/:/app/jre/bin/
+  - --env=GST_PLUGIN_SYSTEM_PATH=/app/lib32/gstreamer-1.0:/app/lib/gstreamer-1.0:/usr/lib/i386-linux-gnu/gstreamer-1.0:/usr/lib/x86_64-linux-gnu/gstreamer-1.0
+  # System tray icon
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --talk-name=org.freedesktop.Flatpak
+  - --filesystem=xdg-data/flatpak:ro
+  # Needed for appimages
+  - --env=APPIMAGE_EXTRACT_AND_RUN=1
+
+inherit-extensions:
+  - org.freedesktop.Platform.GL32
+  - org.freedesktop.Platform.ffmpeg-full
+  - org.freedesktop.Platform.ffmpeg_full.i386
+  - org.winehq.Wine.gecko
+  - org.winehq.Wine.mono
+  - org.winehq.Wine.DLLs
+
+add-extensions:
+  org.gnome.Platform.Compat.i386:
+    directory: lib/i386-linux-gnu
+    version: '44'
+
+  org.gnome.Platform.Compat.i386.Debug:
+    directory: lib/debug/lib/i386-linux-gnu
+    version: '44'
+    no-autodownload: true
+
+  com.valvesoftware.Steam.Utility:
+    subdirectories: true
+    directory: utils
+    version: stable
+    versions: stable;beta;test
+    add-ld-path: lib
+    merge-dirs: bin
+    no-autodownload: true
+    autodelete: true
+
+sdk-extensions:
+  - org.gnome.Sdk.Compat.i386
+  - org.freedesktop.Sdk.Extension.toolchain-i386
+  - org.freedesktop.Sdk.Extension.openjdk17
+  - org.freedesktop.Sdk.Extension.mono6
+
+modules:
+  - name: launch-script
+    buildsystem: simple
+    build-commands:
+      - install -D jagex-run -t /app/bin
+    sources:
+      - type: file
+        dest-filename: jagex-run
+        path: jagex-run.sh 
+  - name: wine-ge
+    buildsystem: simple
+    build-commands:
+      - tar xf wine.tar.xz
+      - install --directory /app/opt
+      - mv lutris-GE-Proton8-12-x86_64 /app/opt
+      - install -D wine-gecko-2.47.3-x86_64.msi -t /app/opt/lutris-GE-Proton8-12-x86_64/share/gecko
+    sources:
+      - type: file 
+        dest-filename: wine.tar.xz       
+        url: https://github.com/GloriousEggroll/wine-ge-custom/releases/download/GE-Proton8-12/wine-lutris-GE-Proton8-12-x86_64.tar.xz
+        sha256: c2008e8c834b38c097292094db0615f8bdac74407a7470929cc92b537fb02f2e
+      - type: file
+        url: https://dl.winehq.org/wine/wine-gecko/2.47.3/wine-gecko-2.47.3-x86_64.msi
+        sha256: a53ee954392b6d1fe3d68545f6e4e2a97afbc8dc8b03a8b443349545ce139675
