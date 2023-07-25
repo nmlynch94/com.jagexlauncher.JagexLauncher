@@ -6,7 +6,7 @@ set -e
 ####################################################
 
 jagex_launcher_url="https://cdn.jagex.com/Jagex%20Launcher%20Installer.exe"
-winebin=/app/opt/lutris-GE-Proton8-12-x86_64/bin/wine
+winebin=/app/opt/lutris-GE-Proton8-12-x86_64/bin/wine64
 workdir="$XDG_DATA_HOME/jagex-launcher"
 wineprefix="$workdir/prefix"
 
@@ -20,7 +20,7 @@ first_run="false"
 ####################################################
 
 # Function to install the jagex launcher
-function install_launcher() {  
+function install_launcher() {
     # Create wine prefix directory and launch the installer
     mkdir -p "$wineprefix"
 
@@ -75,5 +75,4 @@ fi
 if [ "$first_run" == "true" ]; then
     install_launcher
 fi
-
-WINEPREFIX="$wineprefix" "$winebin" "$wineprefix/drive_c/Program Files (x86)/Jagex Launcher/JagexLauncher.exe"
+WINEPREFIX="$XDG_DATA_HOME/jagex-launcher/prefix" "$winebin" "$wineprefix/drive_c/Program Files (x86)/Jagex Launcher/JagexLauncher.exe"
