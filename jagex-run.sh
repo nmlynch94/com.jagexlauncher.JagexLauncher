@@ -24,11 +24,11 @@ runelite_launch_script_url="https://raw.githubusercontent.com/TormStorm/jagex-la
 function install_launcher() {
     # Place pre-created wine prefix so we don't run into errors related to mono or gecko
     mkdir -p "$wineprefix"
+    cd "$workdir"
     wget -O prefix.tar.gz "https://public-bucket-caution1.s3.amazonaws.com/prefix.tar.gz"
     tar xf prefix.tar.gz -C "$wineprefix/../"
     
     # Download the jagex launcher installer
-    cd "$workdir" 
     wget -O jagex-launcher-installer.exe "$jagex_launcher_url"
 
     # Run wine installer
