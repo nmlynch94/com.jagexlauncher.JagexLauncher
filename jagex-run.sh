@@ -15,8 +15,8 @@ clientdir="$wineprefix/drive_c/Program Files (x86)/Jagex Launcher/Games"
 installer_debug_log="$wineprefix/drive_c/users/nate/AppData/LocalLow/Jagex/Jagex Launcher/host.developer.log"
 jagex_launcher_executable="$wineprefix/drive_c/Program Files (x86)/Jagex Launcher/JagexLauncher.exe"
 
-runelite_url="https://raw.githubusercontent.com/nmlynch94/jagex-launcher-linux/main/resources/runelite.sh"
-runelite_launch_script_url="https://raw.githubusercontent.com/TormStorm/jagex-launcher-linux/main/resources/runelite.sh"
+runelite_url="https://github.com/runelite/launcher/releases/download/2.6.8/RuneLite.AppImage"
+runelite_launch_script_url="https://raw.githubusercontent.com/nmlynch94/jagex-launcher-linux/main/resources/runelite.sh"
 
 installer_retries=0
 max_retries=5
