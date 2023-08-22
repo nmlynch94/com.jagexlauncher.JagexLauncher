@@ -126,7 +126,7 @@ function install_launcher() {
     mkdir -p "$clientdir/RuneLite"
     wget -O "$clientdir/RuneLite/RuneLite.AppImage" "$runelite_url"
     wget -O "$clientdir/RuneLite/runelite.sh" "$runelite_launch_script_url"
-    ln -s "$clientdir/RuneLite/runelite.sh" "$clientdir/RuneLite/RuneLite.exe"
+    ln -sf "$clientdir/RuneLite/runelite.sh" "$clientdir/RuneLite/RuneLite.exe"
     chmod +x "$clientdir/RuneLite/runelite.sh"
     chmod +x "$clientdir/RuneLite/RuneLite.AppImage"
     cd "$wineprefix"/drive_c/windows/syswow64
