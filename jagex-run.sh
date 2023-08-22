@@ -27,6 +27,7 @@ max_retries=5
 
 # Function to install the jagex launcher
 function install_launcher() {
+    rm -f "$installer_debug_log"
     echo "This is attempt number $installer_retries of $max_retries at installation"
 
     # Run jagex launcher installer in the background. The reason we do this is because the installer appears to freeze and cannot be closed
@@ -56,8 +57,6 @@ function install_launcher() {
             if [ ! -f "$jagex_launcher_executable" ]; then
                 echo "Installation has not successfully completed. Launching again."
 
-                # Remove debug log
-                rm "$installer_debug_log"
                 installer_retries=$((installer_retries+1))
                 install_launcher
                 break
@@ -78,9 +77,6 @@ function install_launcher() {
             if [ -n "$timeout_message" ]; then
                 echo "The process has timed out. Killing installer and launching again."
                 kill "$installer_process"
-
-                # Remove debug log
-                rm "$installer_debug_log"
 
                 #Start the installation over
                 installer_retries=$((installer_retries+1))
@@ -133,7 +129,7 @@ function install_launcher() {
     cd "$workdir"
 
     # Cleanup
-    rm jagex-launcher-installer.exe
+    rm -f jagex-launcher-installer.exe
 }
 
 ####################################################
