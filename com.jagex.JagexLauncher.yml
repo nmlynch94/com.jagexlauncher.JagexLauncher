@@ -87,16 +87,37 @@ modules:
     sources:
       - type: file
         dest-filename: jagex-run
-        path: jagex-run.sh 
+        path: jagex-run.sh
   - name: wine-ge
     buildsystem: simple
     build-commands:
       - tar xf wine.tar.xz
       - install --directory /app/opt
-      - mv lutris-GE-Proton8-12-x86_64 /app/opt
+      - mv lutris-GE-Proton8-22-x86_64 /app/opt
       - mkdir -p /app/opt
     sources:
       - type: file 
         dest-filename: wine.tar.xz       
-        url: https://github.com/GloriousEggroll/wine-ge-custom/releases/download/GE-Proton8-12/wine-lutris-GE-Proton8-12-x86_64.tar.xz
-        sha256: c2008e8c834b38c097292094db0615f8bdac74407a7470929cc92b537fb02f2e
+        url: https://github.com/GloriousEggroll/wine-ge-custom/releases/download/GE-Proton8-22/wine-lutris-GE-Proton8-22-x86_64.tar.xz
+        sha256: 8b7710521a46146501f32e60396ac8e10b530a0ab85a6dc2b52277e1e6d0a83c
+  - python3-pyyaml.json
+  - python3-requests.json
+  - name: jagex-launcher
+    buildsystem: simple
+    build-commands:
+      - python3 installer.py
+      - mv *.pak /app/
+      - mv *.dll /app/
+      - mv *.dat /app/
+      - mv *.exe /app/
+      - mv *.bin /app/
+      - mv *.json /app/
+      - mv locales /app/
+    sources:
+      - type: file
+        path: installer.py
+      - type: file
+        path: metafile.yaml
+      - type: file
+        path: launcher-win.production.json
+      - solidpiece-sources.yaml
