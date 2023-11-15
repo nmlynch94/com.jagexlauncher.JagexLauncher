@@ -9,8 +9,8 @@ if [ ! -d "$wineprefix" ]; then
     WINEPREFIX="$wineprefix" "$winebin/wineboot"
 
     # Place metafile in the proper location
-    mkdir -p "$wineprefix/drive_c/users/nate/AppData/Local/Jagex Launcher"
-    cp /app/launcher-win.production.json "$wineprefix/drive_c/users/nate/AppData/Local/Jagex Launcher/"
+    mkdir -p "$wineprefix/drive_c/users/$(whoami)/AppData/Local/Jagex Launcher"
+    cp /app/launcher-win.production.json "$wineprefix/drive_c/users/$(whoami)/AppData/Local/Jagex Launcher/"
 
     # Make sure the registry has the installation location for runelite.
     WINEPREFIX="$wineprefix" WINEDEBUG="-all" "$winebin/wine64" reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\RuneLite Launcher_is1" /v "InstallLocation" /t REG_SZ /d "Z:\app" /f
