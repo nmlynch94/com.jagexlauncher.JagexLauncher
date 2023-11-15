@@ -76,10 +76,14 @@ add-extensions:
 sdk-extensions:
   - org.gnome.Sdk.Compat.i386
   - org.freedesktop.Sdk.Extension.toolchain-i386
-  - org.freedesktop.Sdk.Extension.openjdk17
+  - org.freedesktop.Sdk.Extension.openjdk11
   - org.freedesktop.Sdk.Extension.mono6
 
 modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/openjdk11/install.sh
   - name: launch-script
     buildsystem: simple
     build-commands:
@@ -102,6 +106,36 @@ modules:
         sha256: 8b7710521a46146501f32e60396ac8e10b530a0ab85a6dc2b52277e1e6d0a83c
   - python3-pyyaml.json
   - python3-requests.json
+  - name: runelite-jar
+    buildsystem: simple
+    build-commands:
+        - mv RuneLite.jar /app/
+        - mv RuneLite.exe /app/
+    sources:
+        - type: file
+          dest-filename: RuneLite.jar
+          url: https://github.com/runelite/launcher/releases/download/2.6.9/RuneLite.jar
+          sha256: f7588106f897337b4937f8d181c3b352e4c0afd56b2a75b9e6e62b356ede0794
+        - type: script
+          dest-filename: RuneLite.exe
+          commands:
+            - #!/bin/bash
+            - /app/jre/bin/java -jar /app/RuneLite.jar
+  - name: hdos-jar
+    buildsystem: simple
+    build-commands:
+      - mv hdos-launcher.jar /app/
+      - mv HDOS.exe /app/
+    sources:
+      - type: file
+        dest-filename: hdos-launcher.jar
+        url: https://cdn.hdos.dev/launcher/latest/hdos-launcher.jar
+        sha256: d3475d791fa8bfa4e3ae7fa9b1c5e86a8e02d1e93f88ff4776582af78ea92fc0
+      - type: script
+        dest-filename: HDOS.exe
+        commands:
+          - #!/bin/bash
+          - /app/jre/bin/java -jar /app/hdos-launcher.jar
   - name: jagex-launcher
     buildsystem: simple
     build-commands:
