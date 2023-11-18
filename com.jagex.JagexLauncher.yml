@@ -1,10 +1,10 @@
 app-id: com.jagex.JagexLauncher
 sdk: org.gnome.Sdk
 runtime: org.gnome.Platform
-runtime-version: '44'
+runtime-version: '45'
 command: jagex-run
 base: org.winehq.Wine
-base-version: stable-22.08
+base-version: stable-23.08
 finish-args:
   - --share=ipc
   - --socket=x11
@@ -15,16 +15,14 @@ finish-args:
   - --allow=multiarch
   - --allow=devel
   - --talk-name=org.gnome.Mutter.DisplayConfig
+  - --talk-name=org.freedesktop.ScreenSaver
   - --system-talk-name=org.freedesktop.UDisks2
-  - --system-talk-name=org.freedesktop.NetworkManager
-  - --filesystem=xdg-desktop
-  - --filesystem=xdg-documents
-  - --filesystem=xdg-pictures
-  - --filesystem=xdg-music
-  - --filesystem=xdg-videos
-  - --filesystem=xdg-download
-  - --env=WINEDLLPATH=/app/dlls/lib32:/app/dlls/lib
-  - --env=WINEPREFIX=/var/data/wine
+  - --filesystem=home
+  - --filesystem=/run/media
+  # For Debian
+  - --filesystem=/media
+  - --filesystem=~/.var/app/com.valvesoftware.Steam:ro
+  - --env=PATH=/app/bin:/usr/bin:/app/utils/bin:/usr/lib/extensions/vulkan/MangoHud/bin/:/app/jre/bin/:/usr/lib/extensions/vulkan/gamescope/bin
   - --env=GST_PLUGIN_SYSTEM_PATH=/app/lib32/gstreamer-1.0:/app/lib/gstreamer-1.0:/usr/lib/i386-linux-gnu/gstreamer-1.0:/usr/lib/x86_64-linux-gnu/gstreamer-1.0
   # System tray icon
   - --talk-name=org.kde.StatusNotifierWatcher
@@ -32,6 +30,9 @@ finish-args:
   - --filesystem=xdg-data/flatpak:ro
   # Needed for appimages
   - --env=APPIMAGE_EXTRACT_AND_RUN=1
+  # See: https://github.com/flathub/net.lutris.Lutris/pull/368#issuecomment-1751381312
+  - --env=WEBKIT_DISABLE_DMABUF_RENDERER=1
+
 
 inherit-extensions:
   - org.freedesktop.Platform.GL32
@@ -42,42 +43,29 @@ inherit-extensions:
   - org.winehq.Wine.DLLs
 
 add-extensions:
-  org.freedesktop.Platform.Compat.i386:
+  org.gnome.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
-    version: '22.08'
+    version: '45'
 
-  org.freedesktop.Platform.Compat.i386.Debug:
+  org.gnome.Platform.Compat.i386.Debug:
     directory: lib/debug/lib/i386-linux-gnu
-    version: '22.08'
+    version: '45'
     no-autodownload: true
-
-  org.freedesktop.Platform.GL32:
-    directory: lib/i386-linux-gnu/GL
-    version: '1.4'
-    versions: '22.08'
-    subdirectories: true
-    no-autodownload: true
-    autodelete: false
-    add-ld-path: lib
-    merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d;OpenCL/vendors;lib/dri;lib/d3d;vulkan/explicit_layer.d
-    download-if: active-gl-driver
-    enable-if: active-gl-driver
-
-  org.freedesktop.Platform.VAAPI.Intel.i386:
-    directory: lib/i386-linux-gnu/dri/intel-vaapi-driver
-    version: '22.08'
-    subdirectories: true
-    no-autodownload: true
-    autodelete: false
-    add-ld-path: lib
-    download-if: active-gl-driver
-    enable-if: active-gl-driver
 
 sdk-extensions:
   - org.gnome.Sdk.Compat.i386
   - org.freedesktop.Sdk.Extension.toolchain-i386
-  - org.freedesktop.Sdk.Extension.openjdk11
+  - org.freedesktop.Sdk.Extension.openjdk17
   - org.freedesktop.Sdk.Extension.mono6
+
+x-compat-i386-opts: &compat_i386_opts
+  prepend-pkg-config-path: /app/lib32/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig
+  ldflags: -L/app/lib32
+  append-path: /usr/lib/sdk/toolchain-i386/bin
+  env:
+    CC: i686-unknown-linux-gnu-gcc
+    CXX: i686-unknown-linux-gnu-g++
+  libdir: /app/lib32
 
 modules:
   - name: openjdk
