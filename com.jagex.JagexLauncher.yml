@@ -33,7 +33,6 @@ finish-args:
   # See: https://github.com/flathub/net.lutris.Lutris/pull/368#issuecomment-1751381312
   - --env=WEBKIT_DISABLE_DMABUF_RENDERER=1
 
-
 inherit-extensions:
   - org.freedesktop.Platform.GL32
   - org.freedesktop.Platform.ffmpeg-full
