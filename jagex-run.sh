@@ -20,4 +20,4 @@ if [ ! -d "$wineprefix" ]; then
     WINEPREFIX="$wineprefix" WINEDEBUG="-all" "$winebin/wine64" reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\HDOS Launcher_is1" /v "InstallLocation" /t REG_SZ /d "Z:\app" /f
 fi
 
-WINEPREFIX="$wineprefix" "$winebin/wine64" /app/JagexLauncher.exe
+WINEPREFIX="$wineprefix" WINEDLLOVERIDES="dxgi=n" "$winebin/wine64" /app/JagexLauncher.exe
