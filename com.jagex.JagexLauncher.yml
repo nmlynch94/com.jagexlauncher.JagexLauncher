@@ -80,6 +80,17 @@ modules:
       - type: file
         dest-filename: jagex-run
         path: jagex-run.sh
+  - name: wine-ge
+    buildsystem: simple
+    build-commands:
+      - tar xf wine.tar.xz
+      - install --directory /app/opt
+      - mv lutris-GE-Proton8-22-x86_64 /app/opt/wine
+    sources:
+      - type: file 
+        dest-filename: wine.tar.xz       
+        url: https://github.com/GloriousEggroll/wine-ge-custom/releases/download/GE-Proton8-22/wine-lutris-GE-Proton8-22-x86_64.tar.xz
+        sha256: 8b7710521a46146501f32e60396ac8e10b530a0ab85a6dc2b52277e1e6d0a83c
   - python3-pyyaml.json
   - python3-requests.json
   - name: runelite-jar
