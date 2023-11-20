@@ -71,14 +71,6 @@ modules:
     buildsystem: simple
     build-commands:
       - /usr/lib/sdk/openjdk11/install.sh
-  - name: launch-script
-    buildsystem: simple
-    build-commands:
-      - install -D jagex-run -t /app/bin
-    sources:
-      - type: file
-        dest-filename: jagex-run
-        path: jagex-run.sh
   - name: wine-ge
     buildsystem: simple
     build-commands:
@@ -103,7 +95,7 @@ modules:
           url: https://github.com/runelite/launcher/releases/download/2.6.9/RuneLite.jar
           sha256: f7588106f897337b4937f8d181c3b352e4c0afd56b2a75b9e6e62b356ede0794
         - type: script
-          dest-filename: RuneLite.exe
+          dest-filename: RuneLite.exe # We name this bash script .exe bc Jagex Launcher runs RuneLite.exe. Wine is able to somehow intepret it is a bash script and run that instead.
           commands:
             - #!/bin/bash
             - /app/jre/bin/java -jar /app/RuneLite.jar
@@ -118,13 +110,24 @@ modules:
         url: https://cdn.hdos.dev/launcher/latest/hdos-launcher.jar
         sha256: d3475d791fa8bfa4e3ae7fa9b1c5e86a8e02d1e93f88ff4776582af78ea92fc0
       - type: script
-        dest-filename: HDOS.exe
+        dest-filename: HDOS.exe # We name this bash script .exe bc Jagex Launcher runs RuneLite.exe. Wine is able to somehow intepret it is a bash script and run that instead.
         commands:
           - #!/bin/bash
           - /app/jre/bin/java -jar /app/hdos-launcher.jar
+  - name: dxvk
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/opt/dxvk
+      - mv x32 /app/opt/dxvk/
+      - mv x64 /app/opt/dxvk/
+    sources:
+      - type: archive
+        url: https://github.com/doitsujin/dxvk/releases/download/v2.3/dxvk-2.3.tar.gz
+        sha256: 8059c06fc84a864122cc572426f780f35921eb4e3678dc337e9fd79ee5a427c0
   - name: jagex-launcher
     buildsystem: simple
     build-commands:
+      - ls
       - python3 installer.py
       - mv *.pak /app/
       - mv *.dll /app/
@@ -141,3 +144,11 @@ modules:
       - type: file
         path: launcher-win.production.json
       - solidpiece-sources.yaml
+  - name: launch-script
+    buildsystem: simple
+    build-commands:
+      - install -D jagex-run -t /app/bin
+    sources:
+      - type: file
+        dest-filename: jagex-run
+        path: jagex-run.sh
