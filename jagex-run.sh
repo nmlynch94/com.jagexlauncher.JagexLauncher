@@ -2,7 +2,6 @@
 set -x
 winebin="/app/opt/wine/bin"
 wineprefix="$XDG_DATA_HOME"/prefix
-runelite_location="$wineprefix/drive_c/Program Files (x86)/RuneLite"
 
 # Make sure metafile is in the proper location. We do this on each boot to make sure it is replaced after an update.
 mkdir -p "$wineprefix/drive_c/users/$(whoami)/AppData/Local/Jagex Launcher"
