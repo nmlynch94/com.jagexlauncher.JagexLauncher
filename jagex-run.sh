@@ -1,5 +1,4 @@
 #!/bin/sh
-set -x
 winebin="/app/opt/wine/bin"
 wineprefix="$XDG_DATA_HOME"/prefix
 
@@ -13,12 +12,9 @@ WINEPREFIX="$wineprefix" WINEDEBUG="-all" "$winebin/wine" reg.exe add "HKEY_CURR
 # Make sure the registry has the installation location for hdos
 WINEPREFIX="$wineprefix" WINEDEBUG="-all" "$winebin/wine" reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\HDOS Launcher_is1" /v "InstallLocation" /t REG_SZ /d "Z:\app" /f
 
-# Install dxvk
+# Make sure dxvk is in place in our prefix
 cp -r /app/opt/dxvk/x64/*.dll "$wineprefix/drive_c/windows/system32/"
 cp -r /app/opt/dxvk/x32/*.dll "$wineprefix/drive_c/windows/syswow64/"
-
-# Make sure prefix is configured
-WINEPREFIX="$wineprefix" "$winebin/wineboot"
 
 # Run with overrides for dxvk
 WINEPREFIX="$wineprefix" DXVK_HUD=1 WINEDLLOVERRIDES="d3d11=n;d3d10core=n;dxgi=n;d3d9=n" "$winebin/wine" /app/extra/JagexLauncher.exe
