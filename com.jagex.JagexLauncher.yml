@@ -86,7 +86,6 @@ modules:
         sha256: 8b7710521a46146501f32e60396ac8e10b530a0ab85a6dc2b52277e1e6d0a83c
   - python3-pyyaml.json
   - python3-requests.json
-  - python3-pyjwt.json
   - name: runelite-jar
     buildsystem: simple
     build-commands:
