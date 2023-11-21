@@ -13,9 +13,6 @@ finish-args:
   - --device=dri
   - --share=network
   - --allow=multiarch
-  - --allow=devel
-  - --filesystem=home
-  - --filesystem=/run/media
 inherit-extensions:
   - org.freedesktop.Platform.GL32
   - org.freedesktop.Platform.ffmpeg-full
