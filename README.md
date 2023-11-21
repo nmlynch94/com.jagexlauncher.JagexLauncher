@@ -5,6 +5,9 @@ flatpak remove --delete-data com.jagex.JagexLauncher
 # Use these to build and run
 flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak-builder --install-deps-from=flathub --user --install --force-clean build-dir --disable-cache com.jagex.JagexLauncher.yml
+
+# NOTE: you should run this to make sure Compat.i386 is installed due to https://github.com/flathub/net.lutris.Lutris/issues/53
+flatpak install --user flathub org.gnome.Platform.Compat.i386//45
 flatpak run com.jagex.JagexLauncher
 
 # Maintenance
