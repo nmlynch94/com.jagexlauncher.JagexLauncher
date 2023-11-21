@@ -112,6 +112,15 @@ modules:
     build-commands:
       - install apply_extra /app/bin
       - install jagex-install /app/bin
+      - install -Dm644 com.jagex.JagexLauncher.desktop /app/share/applications/com.jagex.JagexLauncher.desktop
+      - install -Dm644 16.png /app/share/icons/hicolor/64x64/apps/com.jagex.JagexLauncher.png
+      - install -Dm644 24.png /app/share/icons/hicolor/64x64/apps/com.jagex.JagexLauncher.png
+      - install -Dm644 32.png /app/share/icons/hicolor/64x64/apps/com.jagex.JagexLauncher.png
+      - install -Dm644 48.png /app/share/icons/hicolor/64x64/apps/com.jagex.JagexLauncher.png
+      - install -Dm644 64.png /app/share/icons/hicolor/64x64/apps/com.jagex.JagexLauncher.png
+      - install -Dm644 128.png /app/share/icons/hicolor/64x64/apps/com.jagex.JagexLauncher.png
+      - install -Dm644 256.png /app/share/icons/hicolor/64x64/apps/com.jagex.JagexLauncher.png
+      - install -Dm644 512.png /app/share/icons/hicolor/64x64/apps/com.jagex.JagexLauncher.png
     sources:
       - type: file
         path: scripts/installer.py
@@ -121,6 +130,24 @@ modules:
       - type: file
         path: scripts/apply_extra.sh
         dest-filename: apply_extra
+      - type: file
+        path: com.jagex.JagexLauncher.desktop
+      - type: file
+        path: icons/16/16.png
+      - type: file
+        path: icons/24/24.png
+      - type: file
+        path: icons/32/32.png
+      - type: file
+        path: icons/48/48.png
+      - type: file
+        path: icons/64/64.png
+      - type: file
+        path: icons/128/128.png
+      - type: file
+        path: icons/256/256.png
+      - type: file
+        path: icons/512/512.png
 
   - name: launch-script
     buildsystem: simple
