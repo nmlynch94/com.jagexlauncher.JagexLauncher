@@ -7,10 +7,10 @@ base: org.winehq.Wine
 base-version: stable-23.08
 finish-args:
   - --share=ipc
-  - --socket=x11-fallback
+  - --socket=x11
   - --socket=wayland
   - --socket=pulseaudio
-  - --device=dri
+  - --device=all
   - --share=network
   - --allow=multiarch
   - --allow=devel
@@ -113,7 +113,6 @@ modules:
       - install apply_extra /app/bin
       - install jagex-install /app/bin
       - install -Dm644 com.jagex.Launcher.desktop /app/share/applications/com.jagex.Launcher.desktop
-      - install -Dm644 com.jagex.Launcher.metainfo.xml /app/share/metainfo/com.jagex.Launcher.metainfo.xml
       - install -Dm644 16.png /app/share/icons/hicolor/64x64/apps/com.jagex.Launcher.png
       - install -Dm644 24.png /app/share/icons/hicolor/64x64/apps/com.jagex.Launcher.png
       - install -Dm644 32.png /app/share/icons/hicolor/64x64/apps/com.jagex.Launcher.png
@@ -133,8 +132,6 @@ modules:
         dest-filename: apply_extra
       - type: file
         path: com.jagex.Launcher.desktop
-      - type: file
-        path: com.jagex.Launcher.metainfo.xml
       - type: file
         path: icons/16/16.png
       - type: file
