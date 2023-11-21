@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import requests
 import json
 import base64
@@ -56,15 +58,16 @@ def main():
     
     metafile_yaml = []
 
-    with open("metafile.yaml", "r") as stream:
+    with open("metafile.json", "r") as stream:
         try:
-            metafile_yaml = yaml.safe_load(stream)
+            content = stream.read()
+            decoded_jwt_body_json = json.loads(base64.b64decode(content.split(".")[1]).decode("utf-8"))
         except yaml.YAMLError as exc:
             print(exc)
 
-    digest_list = metafile_yaml.get("digest_list")
-    file_list = metafile_yaml.get("file_list")
-    pad_array = metafile_yaml.get("pad_array")
+    digest_list = decoded_jwt_body_json["pieces"]["digests"]
+    file_list = decoded_jwt_body_json["files"]
+    pad_array = decoded_jwt_body_json["pad"]
 
     for item in digest_list:
         file_name = "{}.solidpiece".format(base64.b64decode(item).hex())
@@ -100,10 +103,6 @@ def main():
             with open(output_file_path, 'wb') as output:
                 print('Writing {} to {}'.format(file['name'], output_file_path))
                 output.write(file_output)
-                
-        
-    # except Exception as e:
-    #     print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
     main()

@@ -13,6 +13,7 @@ finish-args:
   - --device=all
   - --share=network
   - --allow=multiarch
+  - --persist=Jagex
   - --allow=devel
   - --talk-name=org.gnome.Mutter.DisplayConfig
   - --talk-name=org.freedesktop.ScreenSaver
@@ -24,6 +25,7 @@ finish-args:
   - --filesystem=~/.var/app/com.valvesoftware.Steam:ro
   - --env=PATH=/app/bin:/usr/bin:/app/utils/bin:/usr/lib/extensions/vulkan/MangoHud/bin/:/app/jre/bin/:/usr/lib/extensions/vulkan/gamescope/bin
   - --env=GST_PLUGIN_SYSTEM_PATH=/app/lib32/gstreamer-1.0:/app/lib/gstreamer-1.0:/usr/lib/i386-linux-gnu/gstreamer-1.0:/usr/lib/x86_64-linux-gnu/gstreamer-1.0
+  - --env=CRYPTOGRAPHY_DONT_BUILD_RUST=1
   # System tray icon
   - --talk-name=org.kde.StatusNotifierWatcher
   - --talk-name=org.freedesktop.Flatpak
@@ -32,7 +34,6 @@ finish-args:
   - --env=APPIMAGE_EXTRACT_AND_RUN=1
   # See: https://github.com/flathub/net.lutris.Lutris/pull/368#issuecomment-1751381312
   - --env=WEBKIT_DISABLE_DMABUF_RENDERER=1
-
 inherit-extensions:
   - org.freedesktop.Platform.GL32
   - org.freedesktop.Platform.ffmpeg-full
@@ -56,6 +57,7 @@ sdk-extensions:
   - org.freedesktop.Sdk.Extension.toolchain-i386
   - org.freedesktop.Sdk.Extension.openjdk11
   - org.freedesktop.Sdk.Extension.mono6
+  - org.freedesktop.Sdk.Extension.rust-stable
 
 x-compat-i386-opts: &compat_i386_opts
   prepend-pkg-config-path: /app/lib32/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig
@@ -84,6 +86,7 @@ modules:
         sha256: 8b7710521a46146501f32e60396ac8e10b530a0ab85a6dc2b52277e1e6d0a83c
   - python3-pyyaml.json
   - python3-requests.json
+  - python3-pyjwt.json
   - name: runelite-jar
     buildsystem: simple
     build-commands:
@@ -127,23 +130,18 @@ modules:
   - name: jagex-launcher
     buildsystem: simple
     build-commands:
-      - ls
-      - python3 installer.py
-      - mv *.pak /app/
-      - mv *.dll /app/
-      - mv *.dat /app/
-      - mv *.exe /app/
-      - mv *.bin /app/
-      - mv *.json /app/
-      - mv locales /app/
+      - install apply_extra /app/bin
+      - install jagex-install /app/bin
     sources:
       - type: file
         path: installer.py
-      - type: file
-        path: metafile.yaml
-      - type: file
-        path: launcher-win.production.json
+        dest-filename: jagex-install
       - solidpiece-sources.yaml
+      - metafile-source.yaml
+      - type: file
+        path: apply_extra.sh
+        dest-filename: apply_extra
+
   - name: launch-script
     buildsystem: simple
     build-commands:

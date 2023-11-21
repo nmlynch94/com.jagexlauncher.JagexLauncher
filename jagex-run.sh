@@ -21,4 +21,4 @@ cp -r /app/opt/dxvk/x32/*.dll "$wineprefix/drive_c/windows/syswow64/"
 WINEPREFIX="$wineprefix" "$winebin/wineboot"
 
 # Run with overrides for dxvk
-WINEPREFIX="$wineprefix" DXVK_HUD=1 WINEDLLOVERRIDES="d3d11=n;d3d10core=n;dxgi=n;d3d9=n" "$winebin/wine" /app/JagexLauncher.exe
+WINEPREFIX="$wineprefix" DXVK_HUD=1 WINEDLLOVERRIDES="d3d11=n;d3d10core=n;dxgi=n;d3d9=n" "$winebin/wine" /app/extra/JagexLauncher.exe

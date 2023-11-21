@@ -72,21 +72,28 @@ def cleanup():
         p.unlink()
 
 def main():
-    # TODO make this grab the latest release instead of hard-coding, although this should work for awhile since the launcher auto-updates itself on launch.
-    # That piece reliably on linux.
+    # TODO make this grab the latest release instead of hard-coding.
     metafile_url = "http://jagex-akamai.aws.snxd.com/direct6/launcher-win/metafile/d589817a9dbde1cb1c6f1cde1e81b5284db1c5d0617577e3c3b987406ca2b50b/metafile.json"
     # This is the fingerprint of the certificate that signed the JWT we are using from the jagex CDN so we can validate we are trusting the right certificate chain.
     JAGEX_PACKAGE_CERTIFICATE_SHA256_HASH = "848bae7e92dc58570db50cdfc933a78204c1b00f05d64f753a307ebbaed2404f"
 
     metafile_json = requests.get(metafile_url)
+    node = {
+        'type': "extra-data",
+        'url': metafile_url,
+        'sha256': sha256(metafile_json.content).hexdigest(),
+        'filename': 'metafile.json',
+        'only-arches': ['x86_64'],
+        'size': len(metafile_json.content)
+    }
 
     # Load and deserialize JWT
     jwt = metafile_json.content.strip()
     jwt = jwcrypto.jwt.JWT(jwt=jwt.decode("ascii"))
 
     # Write the JWT to the file
-    with open('launcher-win.production.json', "wb") as jwt_file:
-        jwt_file.write(metafile_json.content)
+    with open('metafile-source.yaml', "w") as jwt_file:
+        yaml.dump(node, jwt_file, explicit_start=False, default_flow_style=False, sort_keys=False)
 
     # Deserialize the leaf certificate and validate the fingerprint of the certificate
     trust_path = jwt.token.jose_header.get("x5c", [])
@@ -147,14 +154,6 @@ def main():
         file_list = verified_claims_json.get("files")
         pad_array = verified_claims_json.get("pad")
 
-        with open("metafile.yaml", 'w') as temp_file:
-            node = {
-                'digest_list': digest_list,
-                'file_list': file_list,
-                'pad_array': pad_array
-            }
-            yaml.dump(node, temp_file, explicit_start=False, default_flow_style=False, sort_keys=False)
-
         downloaded_file_pieces = []
 
         for digest in digest_list:
@@ -168,10 +167,12 @@ def main():
         for item in downloaded_file_pieces:
             with open("{}.solidpiece".format(item), 'rb') as temp_file:
                 node = {
-                    'type': "file",
+                    'type': "extra-data",
                     'url': url_template.format(item[0:2], item),
                     'sha256': sha256(temp_file.read()).hexdigest(),
-                    'dest-filename': '{}.solidpiece'.format(item)
+                    'filename': '{}.solidpiece'.format(item),
+                    'only-arches': ['x86_64'],
+                    'size': os.path.getsize("{}.solidpiece".format(item))
                 }
                 sources.append(node)
         print(sources)
