@@ -18,6 +18,9 @@
 <screenshots>
     <screenshot type="default">https://www.jagex.com/images/launcher-preview-large-rs-202309.jpg</screenshot>
 </screenshots>
+<releases>
+  <release version="0.29.1.0" date="2023-11-21"/>
+</releases>
 <content_rating type="oars-1.1">
     <content_attribute id="violence-cartoon">moderate</content_attribute>
     <content_attribute id="violence-fantasy">intense</content_attribute>
