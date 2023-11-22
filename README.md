@@ -15,4 +15,6 @@ Now, you can run the launcher from your application menu
 If there is a new update released, you need to update the metafile url in generate_sources.py and then run that script to generate the new sources. Eventually, the fingerprint for the certificate that was used to sign the jwt will also need to be changed out once it expires.
 
 TODO: Add in automatic updates by polling that metafile periodically.
+
+based on the work done in https://github.com/TormStorm/jagex-launcher-linux
 ```
