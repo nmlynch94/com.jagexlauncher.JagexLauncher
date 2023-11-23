@@ -15,7 +15,7 @@
 3. NOTE: you should run this to make sure Compat.i386 is installed due to https://github.com/flathub/net.lutris.Lutris/issues/53
 `flatpak install --user flathub org.gnome.Platform.Compat.i386//45`
 
-4. Now, you can run the launcher from your application menu
+5. Now, you can run the launcher from your application menu
 
 # Maintenance
 If there is a new update released, you need to update the metafile url in generate_sources.py and then run that script to generate the new sources. Eventually, the fingerprint for the certificate that was used to sign the jwt will also need to be changed out once it expires.
