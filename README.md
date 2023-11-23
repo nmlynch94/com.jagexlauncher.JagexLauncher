@@ -13,7 +13,7 @@
 `flatpak-builder --install-deps-from=flathub --user --install --force-clean build-dir --disable-cache com.jagex.Launcher.yml`
 
 3. NOTE: you should run this to make sure Compat.i386 is installed due to https://github.com/flathub/net.lutris.Lutris/issues/53
-`flatpak install --user flathub org.gnome.Platform.Compat.i386//45
+`flatpak install --user flathub org.gnome.Platform.Compat.i386//45`
 
 4. Now, you can run the launcher from your application menu
 
