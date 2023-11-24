@@ -1,5 +1,5 @@
 # Disclaimer
-I am in no way affiliated with Jagex and running the launcher through linux is unsupported by them. Any issues should be reported here as tickets.
+I am in no way affiliated with Jagex and running the launcher through linux is unsupported by them. Any issues should be reported here as tickets. Use at your own risk.
 
 # Installing
 ### Release Bundle (easiest)
