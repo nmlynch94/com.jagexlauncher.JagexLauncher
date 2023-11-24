@@ -1,3 +1,6 @@
+# Disclaimer
+I am in no way affiliated with Jagex and running the launcher through linux is unsupported by them. Any issues should be reported here as tickets.
+
 # Installing
 ### Release Bundle (easiest)
 1. Download latest jagexlauncher.flatpak from the releases
