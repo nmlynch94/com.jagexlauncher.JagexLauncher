@@ -57,12 +57,12 @@ modules:
     build-commands:
       - tar xf wine.tar.xz
       - install --directory /app/opt
-      - mv lutris-GE-Proton8-22-x86_64 /app/opt/wine
+      - mv lutris-GE-Proton8-24-x86_64 /app/opt/wine
     sources:
       - type: file 
         dest-filename: wine.tar.xz       
-        url: https://github.com/GloriousEggroll/wine-ge-custom/releases/download/GE-Proton8-22/wine-lutris-GE-Proton8-22-x86_64.tar.xz
-        sha256: 8b7710521a46146501f32e60396ac8e10b530a0ab85a6dc2b52277e1e6d0a83c
+        url: https://github.com/GloriousEggroll/wine-ge-custom/releases/download/GE-Proton8-24/wine-lutris-GE-Proton8-24-x86_64.tar.xz
+        sha512: 5a83e6d2281e45ad84444be9db20b6624241ab05891020d153c124c62f9f38c9d024d9e09eb7385cd4152d1939d4b31260d5c26477fb332583414b157db41519
   - sources/python3-pyyaml.json
   - sources/python3-requests.json
   - name: runelite-jar
@@ -79,7 +79,8 @@ modules:
           dest-filename: RuneLite.exe # We name this bash script .exe bc Jagex Launcher runs RuneLite.exe. Wine is able to somehow intepret it is a bash script and run that instead.
           commands:
             - #!/bin/bash
-            - /app/jre/bin/java -jar /app/RuneLite.jar
+            - set -x
+            - /app/jre/bin/java -Duser.home="$XDG_DATA_HOME/user_home" -jar /app/RuneLite.jar -J-Duser.home="$XDG_DATA_HOME/user_home"
   - name: hdos-jar
     buildsystem: simple
     build-commands:
@@ -112,7 +113,7 @@ modules:
       - install jagex-install /app/bin
       - install -Dm644 com.jagex.Launcher.desktop /app/share/applications/com.jagex.Launcher.desktop
       - install -Dm644 com.jagex.Launcher.metainfo.xml /app/share/metainfo/com.jagex.Launcher.metainfo.xml
-      - install -Dm644 512.png /app/share/icons/hicolor/64x64/apps/com.jagex.Launcher.png
+      - install -Dm644 512.png /app/share/icons/hicolor/512x512/apps/com.jagex.Launcher.png
     sources:
       - type: file
         path: scripts/installer.py
