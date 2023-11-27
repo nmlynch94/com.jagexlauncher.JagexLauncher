@@ -32,7 +32,7 @@ To update, you can simply follow one of the above installation instructions on t
 # Maintenance (Contributors only)
 If there is a new update released, you should simply be able to run generate_sources.py in the sources directory. Eventually, the fingerprint for the certificate that was used to sign the jwt will also need to be changed out once it expires. 
 
-TODO: Add in automatic updates by polling that metafile periodically.
+TODO: Add in automatic updates by polling that metafile, RuneLite, and HDOS releases periodically.
 
 based on the work done in https://github.com/TormStorm/jagex-launcher-linux
 
