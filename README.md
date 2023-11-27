@@ -15,11 +15,12 @@ NOTE: The reason explicitly installing the dependencies above is necessary is du
 1. Only use this next command if it has already been installed and you want to run from scratch. This will wipe out all saved settings.
 `flatpak remove --delete-data com.jagex.Launcher`
 
-2. Use these to build and run - you will need to install flatpak-builder from your package manager.  
-`flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo`  
-`flatpak-builder --install-deps-from=flathub --user --install --force-clean build-dir --disable-cache com.jagex.Launcher.yml`
-
-3. NOTE: you should run this to make sure Compat.i386 is installed due to https://github.com/flathub/net.lutris.Lutris/issues/53
+2. Use these to build and run - you will need to install flatpak-builder from your package manager.
+```
+flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak-builder --install-deps-from=flathub --user --install --force-clean build-dir --disable-cache com.jagex.Launcher.yml
+```
+4. NOTE: you should run this to make sure Compat.i386 is installed due to https://github.com/flathub/net.lutris.Lutris/issues/53
 `flatpak install --user flathub org.gnome.Platform.Compat.i386//45`
 
 5. Now, you can run the launcher from your application menu
