@@ -28,7 +28,7 @@ NOTE: The reason explicitly installing the dependencies above is necessary is du
 To update, you can simply follow one of the above installation instructions on the latest code/release. The Jagex Launcher itself will be able to self-update, so the only reason you will need to do that is to get bugfixes or newer RuneLite or HDOS versions. 
 
 # Maintenance (Contributors only)
-If there is a new update released, you need to update the metafile url in generate_sources.py and then run that script to generate the new sources. Eventually, the fingerprint for the certificate that was used to sign the jwt will also need to be changed out once it expires.
+If there is a new update released, you should simply be able to run generate_sources.py in the sources directory. Eventually, the fingerprint for the certificate that was used to sign the jwt will also need to be changed out once it expires. 
 
 TODO: Add in automatic updates by polling that metafile periodically.
 
