@@ -26,6 +26,11 @@ flatpak install --user flathub org.gnome.Platform.Compat.i386//45
 4. NOTE: The additional flatpak install command above is to make sure Compat.i386 is installed due to https://github.com/flathub/net.lutris.Lutris/issues/53
 5. Now, you can run the launcher from your application menu
 
+### If you have a steam deck
+- Follow one of the methods above, then simply right click on the icon in the Application Menu and choose to create a steam shortcut. Then, you will be able to launch it in Game Mode.
+- Highly recommend the first method, because the second method will require you to disable your Read Only partition in order to install flatpak-builder. This is outside of the scope of this guide, but it works if you prefer that way.
+- You may want to rename your shortcut to whatever you normally play (e.g. RuneLite, RuneScape, OSRS) because the way the deck searches community control schemes is by matching your game's name.
+
 ### Updates
 To update, you can simply follow one of the above installation instructions on the latest code/release. The Jagex Launcher itself will be able to self-update, so the only reason you will need to do that is to get bugfixes or newer RuneLite or HDOS versions. 
 
