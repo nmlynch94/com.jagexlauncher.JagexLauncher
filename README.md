@@ -12,7 +12,7 @@ NOTE: The reason explicitly installing the dependencies above is necessary is du
 
 ### Build and Install Locally
 
-1. Only use this next command if it has already been installed and you want to run from scratch
+1. Only use this next command if it has already been installed and you want to run from scratch. This will wipe out all saved settings.
 `flatpak remove --delete-data com.jagex.Launcher`
 
 2. Use these to build and run - you will need to install flatpak-builder from your package manager.  
