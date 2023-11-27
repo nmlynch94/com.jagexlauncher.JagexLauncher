@@ -8,7 +8,7 @@ I am in no way affiliated with Jagex and running the launcher through linux is u
 ```
 curl -s https://raw.githubusercontent.com/nmlynch94/com.jagexlauncher.JagexLauncher/main/install-jagex-launcher.sh | bash
 ```
-NOTE: The reason explicitly installing the dependencies above is necessary is due to a bug where dependent flatpaks are not installed properly for flatpaks installed from non-flathub sources that depend on flathub flatpaks. 
+NOTE: The reason explicitly installing the dependencies above is necessary is due to a bug where dependency flatpaks are not installed properly for flatpaks installed from non-flathub sources. 
 
 ### Build and Install Locally
 
