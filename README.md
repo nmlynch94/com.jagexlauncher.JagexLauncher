@@ -4,10 +4,10 @@ I am in no way affiliated with Jagex and running the launcher through linux is u
 # Installation Methods
 ### Release Bundle (easiest)
 - Here is a one liner to make sure all dependencies are installed and also install the latest release. This will likely take several minutes if flatpak is newly installed:
-- You can also do it manually, but just make sure you run the flatpak install command from the script in this repo to make sure you have all the correct dependencies.
 ```
 curl -s https://raw.githubusercontent.com/nmlynch94/com.jagexlauncher.JagexLauncher/main/install-jagex-launcher.sh | bash
 ```
+- OPTIONAL: You can also do it manually, but just make sure you run the flatpak install command from the script in this repo to make sure you have all the correct dependencies.
 NOTE: The reason explicitly installing the dependencies above is necessary is due to a bug where dependency flatpaks are not installed properly for flatpaks installed from non-flathub sources. 
 
 ### Build and Install Locally
