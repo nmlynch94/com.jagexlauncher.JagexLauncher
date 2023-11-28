@@ -2,7 +2,7 @@
 Version=1.0
 Type=Application
 Name=Jagex Launcher
-GenericName=JagexLauncher
+GenericName=Jagex Launcher
 Comment=Jagex Launcher
 Icon=com.jagex.Launcher
 Terminal=false
