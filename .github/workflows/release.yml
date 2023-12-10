@@ -1,0 +1,33 @@
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Create Release
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y \
+            flatpak \
+            flatpak-builder
+      - name: Build the flatpak bundle
+        run: |
+          ls ${{ github.workspace }}
+          chmod +x build.sh
+          ./build.sh
+          flatpak build-bundle ~/.local/share/flatpak/repo jagex-launcher.flatpak com.jagex.Launcher
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: jagex-launcher.flatpak
+          draft: true
