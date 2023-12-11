@@ -55,9 +55,10 @@ modules:
   - name: wine-ge
     buildsystem: simple
     build-commands:
-      - tar xf wine.tar.xz
+      - mkdir wine
+      - tar xf wine.tar.xz -C wine --strip-components 1 # String top level dir and place into predictable directory name to allow automated updates
       - install --directory /app/opt
-      - mv lutris-GE-Proton8-24-x86_64 /app/opt/wine
+      - mv wine /app/opt/wine
     sources:
       - type: file
         dest-filename: wine.tar.xz
