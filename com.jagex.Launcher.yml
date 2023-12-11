@@ -63,8 +63,6 @@ modules:
         dest-filename: wine.tar.xz       
         url: https://github.com/GloriousEggroll/wine-ge-custom/releases/download/GE-Proton8-24/wine-lutris-GE-Proton8-24-x86_64.tar.xz
         sha512: 5a83e6d2281e45ad84444be9db20b6624241ab05891020d153c124c62f9f38c9d024d9e09eb7385cd4152d1939d4b31260d5c26477fb332583414b157db41519
-  - sources/python3-pyyaml.json
-  - sources/python3-requests.json
   - name: runelite-jar
     buildsystem: simple
     build-commands:
@@ -96,39 +94,26 @@ modules:
         commands:
           - #!/bin/bash
           - /app/jre/bin/java -jar /app/hdos-launcher.jar
-  - name: dxvk
-    buildsystem: simple
-    build-commands:
-      - mkdir -p /app/opt/dxvk
-      - mv x32 /app/opt/dxvk/
-      - mv x64 /app/opt/dxvk/
-    sources:
-      - type: archive
-        url: https://github.com/doitsujin/dxvk/releases/download/v2.3/dxvk-2.3.tar.gz
-        sha256: 8059c06fc84a864122cc572426f780f35921eb4e3678dc337e9fd79ee5a427c0
   - name: jagex-launcher
     buildsystem: simple
     build-commands:
-      - install apply_extra /app/bin
       - install jagex-install /app/bin
       - install -Dm644 com.jagex.Launcher.desktop /app/share/applications/com.jagex.Launcher.desktop
       - install -Dm644 com.jagex.Launcher.metainfo.xml /app/share/metainfo/com.jagex.Launcher.metainfo.xml
       - install -Dm644 512.png /app/share/icons/hicolor/512x512/apps/com.jagex.Launcher.png
+      - install -Dm644 steamdeck-settings.properties /app/steamdeck-settings.properties
     sources:
       - type: file
         path: jagex-launcher-linux/resources/installer.py
         dest-filename: jagex-install
-      - sources/solidpiece-sources.yaml
-      - sources/metafile-source.yaml
-      - type: file
-        path: scripts/apply_extra.sh
-        dest-filename: apply_extra
       - type: file
         path: com.jagex.Launcher.desktop
       - type: file
         path: com.jagex.Launcher.metainfo.xml
       - type: file
         path: icons/512/512.png
+      - type: file
+        path: jagex-launcher-linux/resources/steamdeck-settings.properties
   - name: launch-script
     buildsystem: simple
     build-commands:
