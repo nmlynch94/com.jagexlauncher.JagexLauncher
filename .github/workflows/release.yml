@@ -27,7 +27,6 @@ jobs:
             flatpak-builder
       - name: Build the flatpak bundle
         run: |
-          ls ${{ github.workspace }}
           chmod +x build.sh
           ./build.sh
           flatpak build-bundle ~/.local/share/flatpak/repo jagex-launcher.flatpak com.jagex.Launcher
