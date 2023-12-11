@@ -1,0 +1,20 @@
+name: GitHub Actions Demo
+run-name: Build Flatpak
+on: [push,pull_request]
+jobs:
+  Build-Flatpak:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y \
+            flatpak \
+            flatpak-builder
+      - name: Build the flatpak
+        run: |
+          ls ${{ github.workspace }}
+          chmod +x build.sh
+          ./build.sh
