@@ -1,6 +1,6 @@
 name: GitHub Actions Demo
 run-name: Build Flatpak
-on: [push]
+on: [push,pull_request]
 jobs:
   Build-Flatpak:
     runs-on: ubuntu-latest
