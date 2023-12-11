@@ -32,6 +32,7 @@ jobs:
           ./build.sh
           flatpak build-bundle ~/.local/share/flatpak/repo jagex-launcher.flatpak com.jagex.Launcher
       - name: Tag this branch with incremented release version
+        id: new-tag
         run: |
           LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
           MAJOR=$(echo "$LAST_TAG" | cut -d. -f1) 
@@ -39,9 +40,10 @@ jobs:
           PATCH=$(echo "$LAST_TAG" | cut -d. -f3)
           NEW_VERSION="$MAJOR.$MINOR.$((PATCH+1))"
           git tag "$NEW_VERSION"
-          git push "https://$GITHUB_ACTOR:${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git" --follow-tags
           git push "https://$GITHUB_ACTOR:${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git" --tags
+          echo "NEW_TAG=$NEW_VERSION" >> $GITHUB_OUTPUT
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: jagex-launcher.flatpak
+          tag_name: ${{ steps.new-tag.outputs.NEW_TAG }}
