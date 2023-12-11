@@ -38,7 +38,7 @@ sdk-extensions:
   - org.freedesktop.Sdk.Extension.openjdk11
   - org.freedesktop.Sdk.Extension.mono6
 
-x-compat-i386-opts: &compat_i386_opts
+x-compat-i386-opts:
   prepend-pkg-config-path: /app/lib32/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig
   ldflags: -L/app/lib32
   append-path: /usr/lib/sdk/toolchain-i386/bin
@@ -59,36 +59,41 @@ modules:
       - install --directory /app/opt
       - mv lutris-GE-Proton8-24-x86_64 /app/opt/wine
     sources:
-      - type: file 
-        dest-filename: wine.tar.xz       
-        url: https://github.com/GloriousEggroll/wine-ge-custom/releases/download/GE-Proton8-24/wine-lutris-GE-Proton8-24-x86_64.tar.xz
-        sha512: 5a83e6d2281e45ad84444be9db20b6624241ab05891020d153c124c62f9f38c9d024d9e09eb7385cd4152d1939d4b31260d5c26477fb332583414b157db41519
+      - type: file
+        dest-filename: wine.tar.xz
+        url: https://github.com/GloriousEggroll/wine-ge-custom/releases/download/GE-Proton8-25/wine-lutris-GE-Proton8-25-x86_64.tar.xz
+        sha512: 03bc8e5f77a82226cc89d6141be4dd77afad003d23ce4fb98987b4446318c7c68953b5a10c379cbaf042a9185dd4629895e14cd9878b272cf74139ac0c07ee63
         x-checker-data:
           type: json
           url: https://api.github.com/repos/GloriousEggroll/wine-ge-custom/releases/latest
           version-query: .tag_name | sub("^GE-Proton-"; "")
-          url-query: .assets[] | select(.name=="wine-lutris-" + $version + "-x86_64.tar.xz") | .browser_download_url
+          url-query: .assets[] | select(.name=="wine-lutris-" + $version + "-x86_64.tar.xz")
+            | .browser_download_url
   - name: runelite-jar
     buildsystem: simple
     build-commands:
-        - mv RuneLite.jar /app/
-        - mv RuneLite.exe /app/
+      - mv RuneLite.jar /app/
+      - mv RuneLite.exe /app/
     sources:
-        - type: file
-          dest-filename: RuneLite.jar
-          url: https://github.com/runelite/launcher/releases/download/2.6.9/RuneLite.jar
-          sha256: f7588106f897337b4937f8d181c3b352e4c0afd56b2a75b9e6e62b356ede0794
-          x-checker-data:
-            type: json
-            url: https://api.github.com/repos/runelite/launcher/releases
-            version-query: first(.[] | select(.assets[] | .name == "RuneLite.jar")) | .tag_name
-            url-query: first(.[] | select(.assets[] | .name == "RuneLite.jar")) .assets[] | select(.name == "RuneLite.jar") | .browser_download_url
-        - type: script
-          dest-filename: RuneLite.exe # We name this bash script .exe bc Jagex Launcher runs RuneLite.exe. Wine is able to somehow intepret it is a bash script and run that instead.
-          commands:
-            - #!/bin/bash
-            - set -x
-            - /app/jre/bin/java -Duser.home="$XDG_DATA_HOME/user_home" -jar /app/RuneLite.jar -J-Duser.home="$XDG_DATA_HOME/user_home"
+      - type: file
+        dest-filename: RuneLite.jar
+        url: https://github.com/runelite/launcher/releases/download/2.6.10/RuneLite.jar
+        sha256: b73561c714ad58984669f0b909731d4cc4c6bacdbf07d227006243d1b566138b
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/runelite/launcher/releases
+          version-query: first(.[] | select(.assets[] | .name == "RuneLite.jar"))
+            | .tag_name
+          url-query: first(.[] | select(.assets[] | .name == "RuneLite.jar")) .assets[]
+            | select(.name == "RuneLite.jar") | .browser_download_url
+      - type: script
+        dest-filename: RuneLite.exe   # We name this bash script .exe bc Jagex Launcher runs RuneLite.exe. Wine is able to somehow intepret it is a bash script and run that instead.
+        commands:
+          - 
+              #!/bin/bash
+          - set -x
+          - /app/jre/bin/java -Duser.home="$XDG_DATA_HOME/user_home" -jar /app/RuneLite.jar
+            -J-Duser.home="$XDG_DATA_HOME/user_home"
   - name: hdos-jar
     buildsystem: simple
     build-commands:
@@ -97,9 +102,9 @@ modules:
     sources:
       - type: file
         dest-filename: hdos-launcher.jar
-        url: https://cdn.hdos.dev/launcher/v7/hdos-launcher.jar
+        url: https://cdn.hdos.dev/launcher/v8/hdos-launcher.jar
         sha256: d3475d791fa8bfa4e3ae7fa9b1c5e86a8e02d1e93f88ff4776582af78ea92fc0
-        x-checker-data: 
+        x-checker-data:
           type: html
           url: https://cdn.hdos.dev/client/getdown.txt
           version-pattern: launcher.version = (\d.*)
@@ -107,7 +112,8 @@ modules:
       - type: script
         dest-filename: HDOS.exe # We name this bash script .exe bc Jagex Launcher runs RuneLite.exe. Wine is able to somehow intepret it is a bash script and run that instead.
         commands:
-          - #!/bin/bash
+          - 
+            #!/bin/bash
           - /app/jre/bin/java -jar /app/hdos-launcher.jar
   - name: jagex-launcher
     buildsystem: simple
