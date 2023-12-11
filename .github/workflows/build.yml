@@ -2,6 +2,7 @@ name: build
 run-name: Build Flatpak
 on:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   Build-Flatpak:
