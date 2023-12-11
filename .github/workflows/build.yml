@@ -1,9 +1,6 @@
 name: GitHub Actions Demo
 run-name: Build Flatpak
-on: 
-  push:
-    branches-ignore:
-      - 'main'
+on:
   pull_request:
 
 jobs:

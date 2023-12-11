@@ -116,7 +116,7 @@ modules:
       - install -Dm644 512.png /app/share/icons/hicolor/512x512/apps/com.jagex.Launcher.png
     sources:
       - type: file
-        path: scripts/installer.py
+        path: jagex-launcher-linux/resources/installer.py
         dest-filename: jagex-install
       - sources/solidpiece-sources.yaml
       - sources/metafile-source.yaml
