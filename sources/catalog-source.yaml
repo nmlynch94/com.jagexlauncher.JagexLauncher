@@ -1,7 +1,0 @@
-type: extra-data
-url: https://jagex.akamaized.net/direct6/launcher-win/alias.json
-sha256: 08d07b7d5d4824a07f35579660ead175a8003ce7347c514260e1083bec45e991
-filename: catalog.json
-only-arches:
-- x86_64
-size: 28995
