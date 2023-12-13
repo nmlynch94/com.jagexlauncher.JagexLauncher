@@ -20,7 +20,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ matrix.branch }}
-
+      - name: Set variables
+        id: variables
+        run: |
+          echo "APP_NAME=$(basename $(git rev-parse --show-toplevel))" >> $GITHUB_OUTPUT
       - uses: docker://ghcr.io/flathub/flatpak-external-data-checker:latest
         env:
           GIT_AUTHOR_NAME: Flatpak External Data Checker
@@ -31,4 +34,4 @@ jobs:
           EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          args: --update --never-fork com.jagex.Launcher.yml # e.g. com.organization.myapp.json
+          args: --update --never-fork ${{ steps.variables.outputs.APP_NAME }}.yml # e.g. com.organization.myapp.json

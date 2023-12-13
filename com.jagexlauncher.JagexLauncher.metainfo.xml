@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-<id>com.jagex.Launcher.desktop</id>
+<id>com.jagexlauncher.JagexLauncher.desktop</id>
 <name>Jagex Launcher</name>
 <developer_name>Jagex</developer_name>
 <summary>A launcher to access Jagex games seamlessly and securely</summary>

@@ -1,10 +1,13 @@
-app-id: com.jagex.Launcher
-sdk: org.gnome.Sdk
-runtime: org.gnome.Platform
-runtime-version: '45'
+# Versions
+x-gl-version: &gl-version '1.4'
+x-gl-versions: &gl-versions 23.08;1.4
+x-runtime-version: &runtime-version '23.08'
+# Flatpak manifest
+app-id: com.jagexlauncher.JagexLauncher
+runtime: org.freedesktop.Platform
+runtime-version: *runtime-version
+sdk: org.freedesktop.Sdk
 command: jagex-run
-base: org.winehq.Wine
-base-version: stable-23.08
 finish-args:
   - --share=ipc
   - --socket=x11
@@ -14,39 +17,24 @@ finish-args:
   - --share=network
   - --allow=multiarch
   - --allow=devel
-inherit-extensions:
-  - org.freedesktop.Platform.GL32
-  - org.freedesktop.Platform.ffmpeg-full
-  - org.freedesktop.Platform.ffmpeg_full.i386
-  - org.winehq.Wine.gecko
-  - org.winehq.Wine.mono
-  - org.winehq.Wine.DLLs
-
-add-extensions:
-  org.gnome.Platform.Compat.i386:
-    directory: lib/i386-linux-gnu
-    version: '45'
-
-  org.gnome.Platform.Compat.i386.Debug:
-    directory: lib/debug/lib/i386-linux-gnu
-    version: '45'
-    no-autodownload: true
-
 sdk-extensions:
-  - org.gnome.Sdk.Compat.i386
-  - org.freedesktop.Sdk.Extension.toolchain-i386
+  - org.freedesktop.Sdk.Compat.i386
   - org.freedesktop.Sdk.Extension.openjdk11
-  - org.freedesktop.Sdk.Extension.mono6
-
-x-compat-i386-opts:
-  prepend-pkg-config-path: /app/lib32/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig
-  ldflags: -L/app/lib32
-  append-path: /usr/lib/sdk/toolchain-i386/bin
-  env:
-    CC: i686-unknown-linux-gnu-gcc
-    CXX: i686-unknown-linux-gnu-g++
-  libdir: /app/lib32
-
+add-extensions:
+  org.freedesktop.Platform.Compat.i386:
+    directory: lib/i386-linux-gnu
+    version: *runtime-version
+  org.freedesktop.Platform.GL32:
+    directory: lib/i386-linux-gnu/GL
+    version: *gl-version
+    versions: *gl-versions
+    subdirectories: true
+    no-autodownload: true
+    autodelete: false
+    add-ld-path: lib
+    merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d;OpenCL/vendors;lib/dri;lib/d3d;vulkan/explicit_layer.d;vulkan/implicit_layer.d
+    download-if: active-gl-driver
+    enable-if: active-gl-driver
 modules:
   - name: openjdk
     buildsystem: simple
@@ -56,7 +44,7 @@ modules:
     buildsystem: simple
     build-commands:
       - mkdir wine
-      - tar xf wine.tar.xz -C wine --strip-components 1 # String top level dir and place into predictable directory name to allow automated updates
+      - tar xf wine.tar.xz -C wine --strip-components 1 # String top level dir and place into predictable directory name to decouple from the name of the top-level dir
       - install --directory /app/opt
       - mv wine /app/opt/wine
     sources:
@@ -119,19 +107,22 @@ modules:
   - name: jagex-launcher
     buildsystem: simple
     build-commands:
-      - install jagex-install /app/bin
-      - install -Dm644 com.jagex.Launcher.desktop /app/share/applications/com.jagex.Launcher.desktop
-      - install -Dm644 com.jagex.Launcher.metainfo.xml /app/share/metainfo/com.jagex.Launcher.metainfo.xml
-      - install -Dm644 512.png /app/share/icons/hicolor/512x512/apps/com.jagex.Launcher.png
+      - mkdir -p /app/lib/i386-linux-gnu/GL
+      - mkdir -p /app/lib/debug/lib/i386-linux-gnu
+      - mkdir -p /app/bin
+      - install jagex-install /app/bin/jagex-install
+      - install -Dm644 com.jagexlauncher.JagexLauncher.desktop /app/share/applications/com.jagexlauncher.JagexLauncher.desktop
+      - install -Dm644 com.jagexlauncher.JagexLauncher.metainfo.xml /app/share/metainfo/com.jagexlauncher.JagexLauncher.metainfo.xml
+      - install -Dm644 512.png /app/share/icons/hicolor/512x512/apps/com.jagexlauncher.JagexLauncher.png
       - install -Dm644 steamdeck-settings.properties /app/steamdeck-settings.properties
     sources:
       - type: file
         path: jagex-launcher-linux/resources/installer.py
         dest-filename: jagex-install
       - type: file
-        path: com.jagex.Launcher.desktop
+        path: com.jagexlauncher.JagexLauncher.desktop
       - type: file
-        path: com.jagex.Launcher.metainfo.xml
+        path: com.jagexlauncher.JagexLauncher.metainfo.xml
       - type: file
         path: icons/512/512.png
       - type: file
@@ -139,7 +130,8 @@ modules:
   - name: launch-script
     buildsystem: simple
     build-commands:
-      - install -D jagex-run -t /app/bin
+      - mkdir -p /app/bin
+      - install jagex-run /app/bin/jagex-run
     sources:
       - type: file
         dest-filename: jagex-run

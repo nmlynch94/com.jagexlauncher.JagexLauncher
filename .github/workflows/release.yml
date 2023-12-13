@@ -2,6 +2,7 @@ on:
   push:
     # Sequence of patterns matched against refs/tags
     branches: main
+  workflow_dispatch: # can be manually dispatched under GitHub's "Actions" tab 
 
 name: Create Release
 
@@ -16,7 +17,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          submodules: true   
+          submodules: true
+      - name: Set variables
+        id: variables
+        run: |
+          LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+          MAJOR=$(echo "$LAST_TAG" | cut -d. -f1) 
+          MINOR=$(echo "$LAST_TAG" | cut -d. -f2) 
+          PATCH=$(echo "$LAST_TAG" | cut -d. -f3)
+          NEW_VERSION="$MAJOR.$MINOR.$((PATCH+1))"
+          echo "NEW_TAG=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "APP_NAME=$(basename $(git rev-parse --show-toplevel))" >> $GITHUB_OUTPUT
       - name: Get tags
         run: git fetch --tags origin     
       - name: Install dependencies
@@ -24,25 +35,20 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y \
             flatpak \
-            flatpak-builder
+            flatpak-builder \
+            yq
       - name: Build the flatpak bundle
         run: |
           chmod +x build.sh
           ./build.sh
-          flatpak build-bundle ~/.local/share/flatpak/repo jagex-launcher.flatpak com.jagex.Launcher
+          flatpak build-bundle ~/.local/share/flatpak/repo ${{ steps.variables.outputs.APP_NAME }}.flatpak ${{ steps.variables.outputs.APP_NAME }}
       - name: Tag this branch with incremented release version
         id: new-tag
         run: |
-          LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
-          MAJOR=$(echo "$LAST_TAG" | cut -d. -f1) 
-          MINOR=$(echo "$LAST_TAG" | cut -d. -f2) 
-          PATCH=$(echo "$LAST_TAG" | cut -d. -f3)
-          NEW_VERSION="$MAJOR.$MINOR.$((PATCH+1))"
-          git tag "$NEW_VERSION"
+          git tag ${{ steps.variables.outputs.NEW_TAG }}
           git push "https://$GITHUB_ACTOR:${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git" --tags
-          echo "NEW_TAG=$NEW_VERSION" >> $GITHUB_OUTPUT
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: jagex-launcher.flatpak
+          files: ${{ steps.new-tag.outputs.APP_NAME }}.flatpak
           tag_name: ${{ steps.new-tag.outputs.NEW_TAG }}
