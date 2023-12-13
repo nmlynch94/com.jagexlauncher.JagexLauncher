@@ -27,7 +27,7 @@ jobs:
           PATCH=$(echo "$LAST_TAG" | cut -d. -f3)
           NEW_VERSION="$MAJOR.$MINOR.$((PATCH+1))"
           echo "NEW_TAG=$NEW_VERSION" >> $GITHUB_OUTPUT
-          echo "APP_NAME=$(basename $(git rev-parse --show-toplevel))" >> $GITHUB_OUTPUT
+          echo "APP_NAME=$(basename $(pwd))" >> $GITHUB_OUTPUT
       - name: Get tags
         run: git fetch --tags origin     
       - name: Install dependencies
@@ -35,8 +35,7 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y \
             flatpak \
-            flatpak-builder \
-            yq
+            flatpak-builder
       - name: Build the flatpak bundle
         run: |
           chmod +x build.sh
