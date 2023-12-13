@@ -49,5 +49,5 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ steps.new-tag.outputs.APP_NAME }}.flatpak
-          tag_name: ${{ steps.new-tag.outputs.NEW_TAG }}
+          files: ${{ steps.variables.outputs.APP_NAME }}.flatpak
+          tag_name: ${{ steps.variables.outputs.NEW_TAG }}
