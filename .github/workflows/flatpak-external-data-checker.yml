@@ -32,6 +32,6 @@ jobs:
           GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
           GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
           EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.EXTERNAL_DATA_SECRET }}
         with:
           args: --update --never-fork ${{ steps.variables.outputs.APP_NAME }}.yml # e.g. com.organization.myapp.json
