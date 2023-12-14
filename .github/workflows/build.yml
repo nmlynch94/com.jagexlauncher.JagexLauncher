@@ -17,7 +17,8 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y \
             flatpak \
-            flatpak-builder
+            flatpak-builder \
+            icoutils
       - name: Build the flatpak
         run: |
           ls ${{ github.workspace }}

@@ -113,7 +113,7 @@ modules:
       - install jagex-install /app/bin/jagex-install
       - install -Dm644 com.jagexlauncher.JagexLauncher.desktop /app/share/applications/com.jagexlauncher.JagexLauncher.desktop
       - install -Dm644 com.jagexlauncher.JagexLauncher.metainfo.xml /app/share/metainfo/com.jagexlauncher.JagexLauncher.metainfo.xml
-      - install -Dm644 512.png /app/share/icons/hicolor/512x512/apps/com.jagexlauncher.JagexLauncher.png
+      - install -Dm644 256.png /app/share/icons/hicolor/256x256/apps/com.jagexlauncher.JagexLauncher.png
       - install -Dm644 steamdeck-settings.properties /app/steamdeck-settings.properties
     sources:
       - type: file
@@ -124,7 +124,7 @@ modules:
       - type: file
         path: com.jagexlauncher.JagexLauncher.metainfo.xml
       - type: file
-        path: icons/512/512.png
+        path: icons/256/256.png
       - type: file
         path: jagex-launcher-linux/resources/steamdeck-settings.properties
   - name: launch-script
