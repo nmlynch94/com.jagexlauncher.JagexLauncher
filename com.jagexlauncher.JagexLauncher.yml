@@ -50,8 +50,8 @@ modules:
     sources:
       - type: file
         dest-filename: wine.tar.xz
-        url: https://github.com/GloriousEggroll/wine-ge-custom/releases/download/GE-Proton8-25/wine-lutris-GE-Proton8-25-x86_64.tar.xz
-        sha512: 03bc8e5f77a82226cc89d6141be4dd77afad003d23ce4fb98987b4446318c7c68953b5a10c379cbaf042a9185dd4629895e14cd9878b272cf74139ac0c07ee63
+        url: https://github.com/GloriousEggroll/wine-ge-custom/releases/download/GE-Proton8-26-LoL/wine-lutris-GE-Proton8-26-LoL-x86_64.tar.xz
+        sha512: 0b55c6b7fe08c9b6d45255b27c4267fa5d36ed3ed67de3c939d61aff6971128d1378a3aeadae3eac77fd126fcbf8abd5375f71d9b0ecc063e7dd9e68e4f9e612
         x-checker-data:
           type: json
           url: https://api.github.com/repos/GloriousEggroll/wine-ge-custom/releases/latest
