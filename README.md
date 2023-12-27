@@ -2,7 +2,7 @@
 I am in no way affiliated with Jagex and running the launcher through linux is unsupported by them. Any issues should be reported here as tickets. Use at your own risk.
 
 # Installation Methods (This is not available on Flathub due to them not allowing Wine applications)
-### Release Bundle (easiest)
+### Release Bundle (easiest) - If you don't understand the other sections, this below command is the only one you need to run to get the launcher running.
 - Here is a one liner to make sure all dependencies are installed and also install the latest release. This will likely take several minutes if flatpak is newly installed NOTE: First launch installs the launcher. It may appear to be doing nothing for a minute or two until it appears. It will be faster after that.
 ```
 curl -fSsL https://raw.githubusercontent.com/nmlynch94/com.jagexlauncher.JagexLauncher/main/install-jagex-launcher.sh | bash
