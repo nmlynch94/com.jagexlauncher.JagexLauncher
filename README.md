@@ -35,10 +35,5 @@ flatpak install --user flathub org.gnome.Platform.Compat.i386//45
 ### Updates
 To update, you can simply follow one of the above installation instructions on the latest code/release. The Jagex Launcher itself will be able to self-update, so the only reason you will need to do that is to get bugfixes or newer RuneLite or HDOS versions. 
 
-# Maintenance (Contributors only)
-If there is a new update released, you should simply be able to run generate_sources.py in the sources directory and commit the output files. Eventually, the fingerprint for the certificate that was used to sign the jwt will also need to be changed out once it expires. Accepting contributions if anyone has a better way to handle that.
-
-TODO: Add in automatic updates by polling that metafile, RuneLite, and HDOS releases periodically.
-
 based on the work done in https://github.com/TormStorm/jagex-launcher-linux
 
