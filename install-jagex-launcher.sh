@@ -4,4 +4,5 @@ flatpak install -y flathub --user runtime/org.freedesktop.Platform.GL.default/x8
 curl -L https://github.com/nmlynch94/com.jagexlauncher.JagexLauncher/releases/latest/download/com.jagexlauncher.JagexLauncher.flatpak > com.jagexlauncher.JagexLauncher.flatpak
 echo "Installing......."
 flatpak install -y --user --noninteractive com.jagexlauncher.JagexLauncher.flatpak
+rm com.jagexlauncher.JagexLauncher.flatpak
 echo "DONE"
