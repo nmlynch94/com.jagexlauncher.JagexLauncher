@@ -39,16 +39,10 @@ jobs:
             flatpak \
             flatpak-builder \
             elfutils
-          flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-      - name: Cache Flatpak builder
-        id: cache-flatpak-builder
-        uses: actions/cache@v4
-        with:
-          path: .flatpak-builder
-          key: ${{ runner.os }}-flatpak-builder-${{ github.workflow }}
       - name: Build Flatpak
         run: |
-          ./build.sh sign
+          flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          ./build.sh
       - name: Push Flatpak repository
         run: |
           cd repo
