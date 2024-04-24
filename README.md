@@ -31,9 +31,3 @@ flatpak install --user flathub org.gnome.Platform.Compat.i386//45
 - You may want to rename your shortcut to whatever you normally play (e.g. RuneLite, RuneScape, OSRS) because the way the deck searches community control schemes is by matching your game's name.
 - I recommend the release bundle method especially, because the flatpak-builder method will require you to disable your Read Only partition in order to install flatpak-builder https://steamdecki.org/SteamOS/Read-only_Filesystem. I don't recommend doing this unless you are familiar enough with Linux to know you can ignore this warning.
 - For RuneLite users, there is a steamdeck-config.properties file placed in the data directory (usually in /var or ~/.var depening on if it's a user or system install). It will show in your file browser if you look for a folder called "data".
-
-### Updates
-To update, you can simply follow one of the above installation instructions on the latest code/release. The Jagex Launcher itself will be able to self-update, so the only reason you will need to do that is to get bugfixes or newer RuneLite or HDOS versions. 
-
-based on the work done in https://github.com/TormStorm/jagex-launcher-linux
-

@@ -1,6 +1,7 @@
 #!/bin/sh
 set -e
 set -x
+echo "The update worked!!!!!!!"
 
 winebin="/app/opt/wine/bin"
 wineprefix="$XDG_DATA_HOME"/prefix
