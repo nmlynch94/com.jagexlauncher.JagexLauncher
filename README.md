@@ -5,9 +5,12 @@ I am in no way affiliated with Jagex and running the launcher through linux is u
 
 ### Repo (easiest, automated updates) - If you don't understand the other sections, this below command is the only one you need to run to get the launcher running.
 - Open a terminal (konsole, etc)
-- Run `curl -fSsL https://raw.githubusercontent.com/nmlynch94/com.jagexlauncher.JagexLauncher/main/install-jagex-launcher-repo.sh | bash`
+- Run 
+```
+curl -fSsL https://raw.githubusercontent.com/nmlynch94/com.jagexlauncher.JagexLauncher/main/install-jagex-launcher-repo.sh | bash
+```
 - The Jagex Launcher will now show in your application menu or you can run with `flatpak run com.jagexlauncher.JagexLauncher`
-- NOTE: The first run will take a bit due to the installation script.
+- NOTE: The first run will take a bit due to the installation script. You will need to click update and then start the app again.
 - To update, simply run `flatpak update` or update in an app store that supports flatpaks
 
 ### Release Bundle (no automated updates) - This option will be going away once the repo option is proven to be stable
