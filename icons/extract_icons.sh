@@ -1,9 +1,10 @@
 #!/bin/bash
-INSTALLER_URL="https://cdn.jagex.com/Jagex%20Launcher%20Installer.exe"
-FILE_LIST_URL="$BASE_URL/launcherinfo.json"
-JAGEX_EXE_NAME="JagexLauncherInstaller.exe"
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-curl -L "$INSTALLER_URL" > "$JAGEX_EXE_NAME"
+python3 "$SCRIPT_DIR"/../jagex-launcher-linux/resources/installer.py
+
+
+JAGEX_EXE_NAME="JagexLauncher.exe"
 
 wrestool -x --output=icon.ico -t14 "$JAGEX_EXE_NAME"
 convert icon.ico 256.png
@@ -11,6 +12,5 @@ mkdir -p 256
 mv 256-0.png 256/256.png
 
 # Cleanup
-rm -f "icon.ico"
-rm -f "256-*"
-rm -f "$JAGEX_EXE_NAME"
+ls | grep -v "extract_icons.sh" | xargs -n1 rm
+rm -r locales
