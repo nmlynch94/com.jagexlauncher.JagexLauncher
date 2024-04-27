@@ -11,3 +11,7 @@ flatpak install --user -y --noninteractive flathub \
     org.freedesktop.Platform.GL32.default/x86_64/${FREEDESKTOP_VERSION}
 
 flatpak install -y --user --noninteractive JLauncher com.jagexlauncher.JagexLauncher
+
+# Perform first time setup
+flatpak run com.jagexlauncher.JagexLauncher
+echo "DONE. You should now be able to launch from your application menu"
