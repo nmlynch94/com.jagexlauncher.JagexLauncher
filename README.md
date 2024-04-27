@@ -24,6 +24,8 @@ curl -fSsL https://raw.githubusercontent.com/nmlynch94/com.jagexlauncher.JagexLa
 
 ### Build Locally (no automated updates)
 - Clone the repo with submodules `git clone --recurse-submodules https://github.com/nmlynch94/com.jagexlauncher.JagexLauncher.git`
+- `cd com.jagexlauncher.JagexLauncher`
+- `cd icons && ./extract_icons.sh && cd ..`
 - `flatpak-builder --install-deps-from=flathub --user --install --force-clean build-dir com.jagexlauncher.JagexLauncher.yml`
 
 ### If you have a steam deck
