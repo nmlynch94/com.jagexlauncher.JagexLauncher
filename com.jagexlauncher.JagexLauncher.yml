@@ -1,30 +1,255 @@
-# Versions
-x-gl-version: &gl-version '1.4'
-x-gl-versions: &gl-versions 23.08;1.4
-x-runtime-version: &runtime-version '23.08'
-# Flatpak manifest
-app-id: com.jagexlauncher.JagexLauncher
+# # Versions
+# x-gl-version: &gl-version '1.4'
+# x-gl-versions: &gl-versions 23.08;1.4
+# x-runtime-version: &runtime-version '23.08'
+# # Flatpak manifest
+# app-id: com.jagexlauncher.JagexLauncher
+# runtime: org.freedesktop.Platform
+# runtime-version: *runtime-version
+# sdk: org.freedesktop.Sdk
+# command: jagex-run
+# finish-args:
+#   - --share=ipc
+#   - --socket=x11
+#   - --socket=wayland
+#   - --socket=pulseaudio
+#   - --device=dri
+#   - --share=network
+#   - --allow=multiarch
+#   - --allow=devel
+#   - --talk-name=org.freedesktop.Notifications
+# sdk-extensions:
+#   - org.freedesktop.Sdk.Compat.i386
+#   - org.freedesktop.Sdk.Extension.openjdk11
+# add-extensions:
+#   org.freedesktop.Platform.Compat.i386:
+#     directory: lib/i386-linux-gnu
+#     version: *runtime-version
+#   org.freedesktop.Platform.GL32:
+#     directory: lib/i386-linux-gnu/GL
+#     version: *gl-version
+#     versions: *gl-versions
+#     subdirectories: true
+#     no-autodownload: true
+#     autodelete: false
+#     add-ld-path: lib
+#     merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d;OpenCL/vendors;lib/dri;lib/d3d;vulkan/explicit_layer.d;vulkan/implicit_layer.d
+#     download-if: active-gl-driver
+#     enable-if: active-gl-driver
+# modules:
+#   - name: libnotify
+#     buildsystem: meson
+#     config-opts:
+#       - -Dman=false
+#       - -Dgtk_doc=false
+#       - -Ddocbook_docs=disabled
+#     cleanup:
+#       - /include
+#       - /lib/pkgconfig
+#       - /lib/debug
+#       - /lib/girepository-1.0
+#       - /share/gtk-doc
+#       - /share/gir-1.0
+#     sources:
+#       - type: git
+#         url: https://github.com/GNOME/libnotify.git
+#         tag: 0.8.3
+#         commit: 6083790f9e0f1827147ecd8799c4dced0e86a877
+#   - name: openjdk
+#     buildsystem: simple
+#     build-commands:
+#       - /usr/lib/sdk/openjdk11/install.sh
+#   - name: wine-ge
+#     buildsystem: simple
+#     build-commands:
+#       - mkdir wine
+#       - tar xf wine.tar.xz -C wine --strip-components 1 # String top level dir and place into predictable directory name to decouple from the name of the top-level dir
+#       - install --directory /app/opt
+#       - mv wine /app/opt/wine
+#     sources:
+#       - type: file
+#         dest-filename: wine.tar.xz
+#         url: https://github.com/GloriousEggroll/wine-ge-custom/releases/download/GE-Proton8-26/wine-lutris-GE-Proton8-26-x86_64.tar.xz
+#         sha512: 3abd578ed45a16096843936e0258799450e6a5751bc67afaf8c58cd245c40e62794a89af25ae482d74d5ca2b7527d17ff77232781c6d9cf97bc02976c2f960bd
+#         x-checker-data:
+#           type: json
+#           url: https://api.github.com/repos/GloriousEggroll/wine-ge-custom/releases/latest
+#           version-query: .tag_name | sub("^GE-Proton-"; "")
+#           url-query: .assets[] | select(.name=="wine-lutris-" + $version + "-x86_64.tar.xz")
+#             | .browser_download_url
+#   - name: runelite-jar
+#     buildsystem: simple
+#     build-commands:
+#       - mv RuneLite.jar /app/
+#       - mv RuneLite.exe /app/
+#     sources:
+#       - type: file
+#         dest-filename: RuneLite.jar
+#         url: https://github.com/runelite/launcher/releases/download/2.7.1/RuneLite.jar
+#         sha256: 47a721fee0ff6d7b229af875d4ad29c0cb0f4459afcf7669d2a8aabf3ede1ebb
+#         x-checker-data:
+#           type: json
+#           url: https://api.github.com/repos/runelite/launcher/releases
+#           version-query: first(.[] | select(.assets[] | .name == "RuneLite.jar"))
+#             | .tag_name
+#           url-query: first(.[] | select(.assets[] | .name == "RuneLite.jar")) .assets[]
+#             | select(.name == "RuneLite.jar") | .browser_download_url
+#       - type: script
+#         dest-filename: RuneLite.exe   # We name this bash script .exe bc Jagex Launcher runs RuneLite.exe. Wine is able to somehow intepret it is a bash script and run that instead.
+#         commands:
+#           - 
+#               #!/bin/bash
+#           - set -x
+#           - /app/jre/bin/java -Duser.home="$XDG_DATA_HOME/user_home" -jar /app/RuneLite.jar
+#             -J-Duser.home="$XDG_DATA_HOME/user_home"
+#   - name: hdos-jar
+#     buildsystem: simple
+#     build-commands:
+#       - mv hdos-launcher.jar /app/
+#       - mv HDOS.exe /app/
+#     sources:
+#       - type: file
+#         dest-filename: hdos-launcher.jar
+#         url: https://cdn.hdos.dev/launcher/v8/hdos-launcher.jar
+#         sha256: d3475d791fa8bfa4e3ae7fa9b1c5e86a8e02d1e93f88ff4776582af78ea92fc0
+#         x-checker-data:
+#           type: html
+#           url: https://cdn.hdos.dev/client/getdown.txt
+#           version-pattern: launcher.version = (\d.*)
+#           url-template: https://cdn.hdos.dev/launcher/v$version/hdos-launcher.jar
+#       - type: script
+#         dest-filename: HDOS.exe # We name this bash script .exe bc Jagex Launcher runs RuneLite.exe. Wine is able to somehow intepret it is a bash script and run that instead.
+#         commands:
+#           - 
+#             #!/bin/bash
+#           - /app/jre/bin/java -jar /app/hdos-launcher.jar
+#   - name: jagex-launcher
+#     buildsystem: simple
+#     build-commands:
+#       - mkdir -p /app/lib/i386-linux-gnu/GL
+#       - mkdir -p /app/lib/debug/lib/i386-linux-gnu
+#       - mkdir -p /app/bin
+#       - install jagex-install /app/bin/jagex-install
+#       - install -Dm644 com.jagexlauncher.JagexLauncher.desktop /app/share/applications/com.jagexlauncher.JagexLauncher.desktop
+#       - install -Dm644 com.jagexlauncher.JagexLauncher.metainfo.xml /app/share/metainfo/com.jagexlauncher.JagexLauncher.metainfo.xml
+#       - install -Dm644 256.png /app/share/icons/hicolor/256x256/apps/com.jagexlauncher.JagexLauncher.png
+#       - install -Dm644 steamdeck-settings.properties /app/steamdeck-settings.properties
+#     sources:
+#       - type: file
+#         path: jagex-launcher-linux/resources/installer.py
+#         dest-filename: jagex-install
+#       - type: file
+#         path: com.jagexlauncher.JagexLauncher.desktop
+#       - type: file
+#         path: com.jagexlauncher.JagexLauncher.metainfo.xml
+#       - type: file
+#         path: icons/256/256.png
+#       - type: file
+#         path: jagex-launcher-linux/resources/steamdeck-settings.properties
+#   - name: launch-script
+#     buildsystem: simple
+#     build-commands:
+#       - mkdir -p /app/bin
+#       - install jagex-run /app/bin/jagex-run
+#     sources:
+#       - type: file
+#         dest-filename: jagex-run
+#         path: scripts/jagex-run.sh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+id: com.jagexlauncher.JagexLauncher
 runtime: org.freedesktop.Platform
-runtime-version: *runtime-version
+runtime-version: &runtime-version '23.08'
+x-gl-version: &gl-version '1.4'
+x-gl-versions: &gl-versions 23.08;23.08-extra;1.4
+x-gl-merge-dirs: &gl-merge-dirs vulkan/icd.d;glvnd/egl_vendor.d;OpenCL/vendors;lib/dri;lib/d3d;vulkan/explicit_layer.d;vulkan/implicit_layer.d
 sdk: org.freedesktop.Sdk
 command: jagex-run
-finish-args:
-  - --share=ipc
-  - --socket=x11
-  - --socket=wayland
-  - --socket=pulseaudio
-  - --device=dri
-  - --share=network
-  - --allow=multiarch
-  - --allow=devel
-  - --talk-name=org.freedesktop.Notifications
+separate-locales: false
+
 sdk-extensions:
   - org.freedesktop.Sdk.Compat.i386
+  - org.freedesktop.Sdk.Extension.toolchain-i386
   - org.freedesktop.Sdk.Extension.openjdk11
+
+finish-args:
+  - --allow=devel
+  - --allow=multiarch
+  - --device=all
+  - --allow=bluetooth
+  - --allow=per-app-dev-shm
+  - --env=PATH=/app/bin:/app/utils/bin:/usr/bin:/usr/lib/extensions/vulkan/MangoHud/bin:/usr/lib/extensions/vulkan/gamescope/bin:/usr/lib/extensions/vulkan/OBSVkCapture/bin
+  - --filesystem=xdg-data/lutris:rw
+  - --filesystem=xdg-data/Steam:rw
+  - --filesystem=xdg-data/applications:rw
+  - --filesystem=~/.steam:rw
+  - --filesystem=~/Games:rw
+  - --filesystem=~/.local/share/Steam:rw
+  - --filesystem=~/.var/app/com.valvesoftware.Steam:rw
+  - --filesystem=~/.var/app/org.openwinecomponents.umu.umu-launcher:rw
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-desktop
+  - --filesystem=xdg-download
+  - --env=TZ=
+  - --unset-env=TZ
+  - --env=LC_ADDRESS=C
+  - --env=LC_COLLATE=C
+  - --env=LC_MONETARY=C
+  - --env=LC_MEASUREMENT=C
+  - --env=LC_NAME=C
+  - --env=LC_NUMERIC=C
+  - --env=LC_TELEPHONE=C
+  - --env=SDL_VIDEODRIVER=
+  - --unset-env=SDL_VIDEODRIVER
+  - --env=DBUS_FATAL_WARNINGS=0
+  - --env=XDG_CONFIG_DIRS=/etc/xdg:/usr/lib/x86_64-linux-gnu/GL:/usr/lib/i386-linux-gnu/GL
+  # Wine uses UDisks2 to enumerate disk drives
+  - --system-talk-name=org.freedesktop.UDisks2
+  # should fix access to SD card on the deck
+  - --filesystem=/run/media
+  # There are still quite a few users using /mnt/ for external drives
+  - --filesystem=/mnt
+  # should fix steamdeck controler navigation
+  - --filesystem=/run/udev:ro
+  # should fix discord rich presence
+  - --filesystem=xdg-run/app/com.discordapp.Discord:create
+  - --persist=.
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+  - --socket=pulseaudio
+  - --share=network
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
+  # Required for bwrap to work
+  - --talk-name=org.freedesktop.portal.Background
+  # --- Steam ---
+  # Pressure Vessel
+  # See https://github.com/flathub/com.valvesoftware.Steam/commit/0538256facdb0837c33232bc65a9195a8a5bc750
+  - --env=XDG_DATA_DIRS=/app/share:/usr/lib/extensions/vulkan/share:/usr/share:/usr/share/runtime/share:/run/host/user-share:/run/host/share:/usr/lib/pressure-vessel/overrides/share
+
 add-extensions:
   org.freedesktop.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
     version: *runtime-version
+
+  org.freedesktop.Platform.Compat.i386.Debug:
+    directory: lib/debug/lib/i386-linux-gnu
+    version: *runtime-version
+    no-autodownload: true
+
   org.freedesktop.Platform.GL32:
     directory: lib/i386-linux-gnu/GL
     version: *gl-version
@@ -33,50 +258,66 @@ add-extensions:
     no-autodownload: true
     autodelete: false
     add-ld-path: lib
-    merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d;OpenCL/vendors;lib/dri;lib/d3d;vulkan/explicit_layer.d;vulkan/implicit_layer.d
+    merge-dirs: *gl-merge-dirs
     download-if: active-gl-driver
     enable-if: active-gl-driver
+    autoprune-unless: active-gl-driver
+
+  org.freedesktop.Platform.GL32.Debug:
+    directory: lib/debug/lib/i386-linux-gnu/GL
+    version: *gl-version
+    versions: *gl-versions
+    subdirectories: true
+    no-autodownload: true
+    merge-dirs: *gl-merge-dirs
+    enable-if: active-gl-driver
+    autoprune-unless: active-gl-driver
+
+  org.freedesktop.Platform.VAAPI.Intel.i386:
+    directory: lib/i386-linux-gnu/dri/intel-vaapi-driver
+    version: *runtime-version
+    versions: *runtime-version
+    autodelete: false
+    no-autodownload: true
+    add-ld-path: lib
+    download-if: have-intel-gpu
+    autoprune-unless: have-intel-gpu
+
+  com.valvesoftware.Steam.CompatibilityTool:
+    subdirectories: true
+    directory: share/steam/compatibilitytools.d
+    version: stable
+    versions: stable;beta;test
+    no-autodownload: true
+    autodelete: true
+
+  com.valvesoftware.Steam.Utility:
+    subdirectories: true
+    directory: utils
+    version: stable
+    versions: stable;beta;test
+    add-ld-path: lib
+    merge-dirs: bin;lib/python3.10/site-packages;share/vulkan/explicit_layer.d;share/vulkan/implicit_layer.d;share/steam/compatibilitytools.d;
+    no-autodownload: true
+    autodelete: true
+
 modules:
-  - name: libnotify
-    buildsystem: meson
-    config-opts:
-      - -Dman=false
-      - -Dgtk_doc=false
-      - -Ddocbook_docs=disabled
-    cleanup:
-      - /include
-      - /lib/pkgconfig
-      - /lib/debug
-      - /lib/girepository-1.0
-      - /share/gtk-doc
-      - /share/gir-1.0
+  # --- umu ---
+  - name: umu-run
+    buildsystem: simple
+    build-commands:
+      - |
+        git submodule update --init --recursive
+        ./configure.sh --prefix=/app
+        make FLATPAK=xtrue install
     sources:
       - type: git
-        url: https://github.com/GNOME/libnotify.git
-        tag: 0.8.3
-        commit: 6083790f9e0f1827147ecd8799c4dced0e86a877
+        url: https://github.com/Open-Wine-Components/umu-launcher.git
+        branch: main
   - name: openjdk
     buildsystem: simple
     build-commands:
       - /usr/lib/sdk/openjdk11/install.sh
-  - name: wine-ge
-    buildsystem: simple
-    build-commands:
-      - mkdir wine
-      - tar xf wine.tar.xz -C wine --strip-components 1 # String top level dir and place into predictable directory name to decouple from the name of the top-level dir
-      - install --directory /app/opt
-      - mv wine /app/opt/wine
-    sources:
-      - type: file
-        dest-filename: wine.tar.xz
-        url: https://github.com/GloriousEggroll/wine-ge-custom/releases/download/GE-Proton8-26/wine-lutris-GE-Proton8-26-x86_64.tar.xz
-        sha512: 3abd578ed45a16096843936e0258799450e6a5751bc67afaf8c58cd245c40e62794a89af25ae482d74d5ca2b7527d17ff77232781c6d9cf97bc02976c2f960bd
-        x-checker-data:
-          type: json
-          url: https://api.github.com/repos/GloriousEggroll/wine-ge-custom/releases/latest
-          version-query: .tag_name | sub("^GE-Proton-"; "")
-          url-query: .assets[] | select(.name=="wine-lutris-" + $version + "-x86_64.tar.xz")
-            | .browser_download_url
   - name: runelite-jar
     buildsystem: simple
     build-commands:
@@ -102,28 +343,35 @@ modules:
           - set -x
           - /app/jre/bin/java -Duser.home="$XDG_DATA_HOME/user_home" -jar /app/RuneLite.jar
             -J-Duser.home="$XDG_DATA_HOME/user_home"
-  - name: hdos-jar
+  - name: platform-bootstrap
     buildsystem: simple
     build-commands:
-      - mv hdos-launcher.jar /app/
-      - mv HDOS.exe /app/
+      - |
+        set -e
+        mkdir -p /app/bin
+        mkdir -p /app/lib/i386-linux-gnu
+        mkdir -p /app/lib/i386-linux-gnu/GL
+        mkdir -p /app/lib/i386-linux-gnu/dri/intel-vaapi-driver
+        mkdir -p /app/lib/debug/lib/i386-linux-gnu
+        mkdir -p /app/lib/debug/lib/i386-linux-gnu/GL
+        install -Dm644 -t /app/etc ld.so.conf
+        mkdir -p /app/share/steam/compatibilitytools.d
+        mkdir -p /app/utils /app/share/vulkan
+        ln -srv /app/{utils/,}share/vulkan/explicit_layer.d
+        ln -srv /app/{utils/,}share/vulkan/implicit_layer.d
+        mkdir -p /app/links/lib
+        ln -srv /app/lib /app/links/lib/x86_64-linux-gnu
+        ln -srv /app/lib32 /app/links/lib/i386-linux-gnu
     sources:
-      - type: file
-        dest-filename: hdos-launcher.jar
-        url: https://cdn.hdos.dev/launcher/v8/hdos-launcher.jar
-        sha256: d3475d791fa8bfa4e3ae7fa9b1c5e86a8e02d1e93f88ff4776582af78ea92fc0
-        x-checker-data:
-          type: html
-          url: https://cdn.hdos.dev/client/getdown.txt
-          version-pattern: launcher.version = (\d.*)
-          url-template: https://cdn.hdos.dev/launcher/v$version/hdos-launcher.jar
-      - type: script
-        dest-filename: HDOS.exe # We name this bash script .exe bc Jagex Launcher runs RuneLite.exe. Wine is able to somehow intepret it is a bash script and run that instead.
-        commands:
-          - 
-            #!/bin/bash
-          - /app/jre/bin/java -jar /app/hdos-launcher.jar
-  - name: jagex-launcher
+      - type: inline
+        dest-filename: ld.so.conf
+        contents: |
+          # We just make any GL32 extension have higher priority
+          include /run/flatpak/ld.so.conf.d/app-*-org.freedesktop.Platform.GL32.*.conf
+          /app/lib32
+          /app/lib/i386-linux-gnu
+          /lib64
+      - name: jagex-launcher
     buildsystem: simple
     build-commands:
       - mkdir -p /app/lib/i386-linux-gnu/GL

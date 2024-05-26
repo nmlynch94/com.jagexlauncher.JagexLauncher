@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -ex
 
 winebin="/app/opt/wine/bin"
 wineprefix="$XDG_DATA_HOME"/prefix
@@ -18,10 +18,10 @@ if ! [ -f "$jagex_launcher_exe_path" ]; then
 fi
 
 # Make sure the registry has the installation location for runelite.
-WINEPREFIX="$wineprefix" WINEDEBUG="-all" "$winebin/wine" reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\RuneLite Launcher_is1" /v "InstallLocation" /t REG_SZ /d "Z:\app" /f
+WINEPREFIX="$wineprefix" GAMEID=asdf WINEDEBUG="-all" "umu-run" "$XDG_DATA_HOME"/prefix/drive_c/windows/syswow64/reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\RuneLite Launcher_is1" /v "InstallLocation" /t REG_SZ /d "Z:\app" /f
 
 # Make sure the registry has the installation location for hdos
-WINEPREFIX="$wineprefix" WINEDEBUG="-all" "$winebin/wine" reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\HDOS Launcher_is1" /v "InstallLocation" /t REG_SZ /d "Z:\app" /f
+WINEPREFIX="$wineprefix" GAMEID=asdf WINEDEBUG="-all" "umu-run" "$XDG_DATA_HOME"/prefix/drive_c/windows/syswow64/reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\HDOS Launcher_is1" /v "InstallLocation" /t REG_SZ /d "Z:\app" /f
 
 # Run with overrides for dxvk
-WINEPREFIX="$wineprefix" WINEDLLOVERRIDES="dxgi=b" "$winebin/wine" "$jagex_launcher_exe_path"
+WINEPREFIX="$wineprefix" GAMEID=asdf "umu-run" "$jagex_launcher_exe_path"
