@@ -20,7 +20,7 @@ finish-args:
   - --talk-name=org.freedesktop.Notifications
 sdk-extensions:
   - org.freedesktop.Sdk.Compat.i386
-  - org.freedesktop.Sdk.Extension.openjdk11
+  - org.freedesktop.Sdk.Extension.openjdk17
 add-extensions:
   org.freedesktop.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
@@ -58,7 +58,17 @@ modules:
   - name: openjdk
     buildsystem: simple
     build-commands:
-      - /usr/lib/sdk/openjdk11/install.sh
+      - /usr/lib/sdk/openjdk17/install.sh
+      - mv /app/jre/bin/java /app/jre/bin/java.bk
+      - mv java /app/jre/bin/java
+      - chmod +x /app/jre/bin/java
+    sources:
+      - type: script
+        dest-filename: java # https://gitlab.com/hdos/issues/-/issues/2004
+        commands:
+          - 
+            #!/bin/bash
+          - /app/jre/bin/java.bk $(echo "$@" | sed 's|--add-opens java.desktop/java.awt=ALL-UNNAMED||g')
   - name: wine-ge
     buildsystem: simple
     build-commands:
@@ -100,7 +110,7 @@ modules:
           - 
               #!/bin/bash
           - set -x
-          - /app/jre/bin/java -Duser.home="$XDG_DATA_HOME/user_home" -jar /app/RuneLite.jar
+          - /app/jre/bin/java.bk -Duser.home="$XDG_DATA_HOME/user_home" -jar /app/RuneLite.jar
             -J-Duser.home="$XDG_DATA_HOME/user_home"
   - name: hdos-jar
     buildsystem: simple
