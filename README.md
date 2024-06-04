@@ -2,7 +2,7 @@
 I am in no way affiliated with Jagex and running the launcher through linux is unsupported by them. Any issues should be reported here as tickets. Use at your own risk.  
 If you have any questions, Torm's Discord is the best place for this https://discord.gg/aX7GT2Mkdu.
 
-# Installation Methods (This is not available on Flathub due to them not allowing Wine applications)
+# Installation Methods. Choose One Only.
 
 ### Repo (easiest, automated updates) - If you don't understand the other sections, this below command is the only one you need to run to get the launcher running.
 - Open a terminal (konsole, etc)
