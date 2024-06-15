@@ -4,7 +4,9 @@ If you have any questions, Torm's Discord is the best place for this https://dis
 
 # Installation Methods. Choose One Only.
 
-### Repo (easiest, automated updates) - If you don't understand the other sections, this below command is the only one you need to run to get the launcher running.
+### Steam - As of time of writing on 6/15/2024, Dark and Darker is back on steam. This is a much better user experience than the options below. Simply install on steam and run there.
+
+### Repo (automated updates) - If you don't understand the other sections, this below command is the only one you need to run to get the launcher running.
 - Open a terminal (konsole, etc)
 - Run 
 ```
