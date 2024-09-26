@@ -20,6 +20,9 @@ jobs:
             flatpak-builder \
             icoutils
       - name: Build the flatpak
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_KEY_GREP: ${{ secrets.GPG_KEY_GREP }}
         run: |
           ls ${{ github.workspace }}
           chmod +x build.sh
