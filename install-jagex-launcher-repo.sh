@@ -1,6 +1,8 @@
 #!/bin/bash
 FREEDESKTOP_VERSION="23.08"
 
+set -e
+
 HAS_NVIDIA=0
 if [[ -f /proc/driver/nvidia/version ]]; then
     HAS_NVIDIA=1
