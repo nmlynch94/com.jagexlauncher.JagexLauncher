@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 cd icons
 ./extract_icons.sh
 cd ..
