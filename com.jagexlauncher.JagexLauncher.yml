@@ -95,8 +95,8 @@ modules:
     sources:
       - type: file
         dest-filename: RuneLite.jar
-        url: https://github.com/runelite/launcher/releases/download/2.7.3/RuneLite.jar
-        sha256: d22a33eaa43b2f859a76824f3352cf3051bf1ff60b4fc405455ecbe8717bb827
+        url: https://github.com/runelite/launcher/releases/download/2.7.4/RuneLite.jar
+        sha256: fb71b8164d2d974595213ca142f44f43d9e166e2ebe1700f66f5f76f5ce00dbf
         x-checker-data:
           type: json
           url: https://api.github.com/repos/runelite/launcher/releases
