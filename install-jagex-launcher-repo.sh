@@ -6,7 +6,7 @@ set -e
 HAS_NVIDIA=0
 if [[ -f /proc/driver/nvidia/version ]]; then
     HAS_NVIDIA=1
-    NVIDIA_VERISON=$(cat /proc/driver/nvidia/version | head -n 1 | awk '{ print $8 }' | sed 's/\./-/g')
+    NVIDIA_VERSION=$(cat /proc/driver/nvidia/version | grep "NVRM version" | grep -oE '[0-9]{3,4}\.[0-9]{1,4}[\.0-9]+\s' | sed 's/\./-/g' | sed 's/ //g')
 fi
 
 flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
@@ -20,8 +20,8 @@ flatpak install --user -y --noninteractive flathub \
 
 if [[ ${HAS_NVIDIA} -eq 1 ]]; then
     flatpak install --user -y --noninteractive flathub \
-        org.freedesktop.Platform.GL.nvidia-${NVIDIA_VERISON}/x86_64 \
-        org.freedesktop.Platform.GL32.nvidia-${NVIDIA_VERISON}/x86_64
+        org.freedesktop.Platform.GL.nvidia-${NVIDIA_VERSION}/x86_64 \
+        org.freedesktop.Platform.GL32.nvidia-${NVIDIA_VERSION}/x86_64
 fi
 
 flatpak install -y --user --noninteractive JLauncher com.jagexlauncher.JagexLauncher
