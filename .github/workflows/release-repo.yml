@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   release:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -44,9 +44,7 @@ jobs:
             flatpak \
             flatpak-builder \
             elfutils \
-            rsync \
-            appstream \
-            appstream-compose
+            rsync
       - name: Build Flatpak
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
