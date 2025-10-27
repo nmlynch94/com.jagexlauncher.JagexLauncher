@@ -32,7 +32,8 @@ jobs:
             elfutils \
             rsync \
             imagemagick \
-            appstream
+            appstream \
+            appstream-compose
       - name: Build the flatpak
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
