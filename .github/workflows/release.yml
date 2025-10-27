@@ -49,7 +49,8 @@ jobs:
             flatpak-builder \
             elfutils \
             rsync \
-            appstream
+            appstream \
+            appstream-compose
       - name: Build the flatpak bundle
         run: |
           chmod +x build.sh
