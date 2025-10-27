@@ -1,0 +1,26 @@
+name: build
+run-name: Build Flatpak
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  Build-Flatpak:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y \
+            flatpak \
+            flatpak-builder \
+            icoutils
+      - name: Build the flatpak
+        run: |
+          ls ${{ github.workspace }}
+          chmod +x build.sh
+          ./build.sh
