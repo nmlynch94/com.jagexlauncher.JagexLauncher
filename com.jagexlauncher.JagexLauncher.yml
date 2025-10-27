@@ -1,7 +1,7 @@
 # Versions
 x-gl-version: &gl-version '1.4'
-x-gl-versions: &gl-versions 23.08;1.4
-x-runtime-version: &runtime-version '23.08'
+x-gl-versions: &gl-versions 25.08;1.4
+x-runtime-version: &runtime-version '25.08'
 # Flatpak manifest
 app-id: com.jagexlauncher.JagexLauncher
 runtime: org.freedesktop.Platform
