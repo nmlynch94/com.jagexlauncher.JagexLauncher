@@ -44,7 +44,8 @@ jobs:
             flatpak \
             flatpak-builder \
             elfutils \
-            rsync
+            rsync \
+            imagemagick
       - name: Build Flatpak
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
