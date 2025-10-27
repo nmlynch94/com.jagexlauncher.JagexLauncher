@@ -48,7 +48,8 @@ jobs:
             flatpak \
             flatpak-builder \
             elfutils \
-            rsync
+            rsync \
+            appstream
       - name: Build the flatpak bundle
         run: |
           chmod +x build.sh
