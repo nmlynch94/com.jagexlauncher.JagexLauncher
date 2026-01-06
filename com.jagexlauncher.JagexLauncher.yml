@@ -82,7 +82,7 @@ modules:
       - chmod +x /app/jre/bin/java
     sources:
       - type: script
-        dest-filename: java 
+        dest-filename: java
         commands:
           - 
             #!/bin/bash
@@ -91,7 +91,7 @@ modules:
     buildsystem: simple
     build-commands:
       - mkdir proton
-      - tar xf protonge.tar.xz -C proton --strip-components 1 
+      - tar xf protonge.tar.xz -C proton --strip-components 1
       - install --directory /app/opt
       - chmod 755 -R proton
       - mv proton /app/opt/proton
@@ -110,9 +110,9 @@ modules:
       - cp -r wine-staging/share/* /app/share/
     sources:
       - type: file
-        url: https://github.com/Kron4ek/Wine-Builds/releases/download/10.18/wine-10.18-staging-amd64.tar.xz
+        url: https://github.com/Kron4ek/Wine-Builds/releases/download/11.0-rc3/wine-11.0-rc3-staging-amd64.tar.xz
         dest-filename: wine-staging.tar.xz
-        sha256: 466d24aa919892186fa40c374452dad549092a023fd9ab2efe0c7bfea4b23713
+        sha256: e38c28f65c928a1981fdd401d68f2578272f9b9e259104519d909a8894b96f98
         x-checker-data:
           type: json
           url: https://api.github.com/repos/Kron4ek/Wine-Builds/releases/latest
