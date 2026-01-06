@@ -1,34 +1,81 @@
 #!/bin/sh
-set -e
+set -euo pipefail
 
 winebin="/app/opt/wine/bin"
-wineprefix="$XDG_DATA_HOME"/prefix
-jagex_launcher_exe_path="$wineprefix/drive_c/Program Files (x86)/Jagex Launcher/JagexLauncher.exe"
+wineprefix="$XDG_DATA_HOME"/umu_prefix
+JAGEX_LAUNCHER_EXE_PATH="$wineprefix/drive_c/Program Files (x86)/Jagex Launcher/JagexLauncher.exe"
+JAGEX_LAUNCHER_GAMES_PATH="$(dirname "$JAGEX_LAUNCHER_EXE_PATH")/Games"
 # The umu_proton_dir and protonpath need to be different because umu_proton_dir is from the flatpak sandbox perspective, while protonpath is from the steam runtime perspective.
-export UMU_PROTON_DIR="$HOME/.var/app/com.jagexlauncher.JagexLauncher/.local/share/umu/proton-eve-bundled/proton"
-export PROTONPATH="$HOME/.local/share/umu/proton-eve-bundled/proton"
+export UMU_PROTON_DIR="$HOME/.var/app/com.jagexlauncher.JagexLauncher/.local/share/umu/proton-bundled/proton"
+export PROTONPATH="$HOME/.local/share/umu/proton-bundled"
 export WINEPREFIX="$wineprefix"
 
-# This is an unfortunate hack needed because the /app dir is not mounted inside the steam runtime. The paths seen by umu-run is different than is seen by scripts in the steam runtime. Let me know if you have ideas on how to avoid this.
-if [[ -f "$UMU_PROTON_DIR/proton" ]]; then
-  LOCAL_SHA256="$(sha256sum $UMU_PROTON_DIR/proton | awk '{ print $1 }')"
-  FLATPAK_SHA256="$(sha256sum /app/opt/proton/proton | awk '{ print $1 }')"
+function ensure_latest_file () {
+  SOURCE_FILE_PATH="$1"
+  DEST_FILE_PATH="$2"
 
-  if [[ "$LOCAL_SHA256" != "$FLATPAK_SHA256" ]]; then
-    echo "$LOCAL_SHA256 does not match $FLATPAK_SHA256. Updating proton ge..."
+  echo "ensuring $SOURCE_FILE_PATH matches $DEST_FILE_PATH"
+  if [[ -f "$DEST_FILE_PATH" ]]; then
+    SOURCE_SHA256="$(sha256sum "$SOURCE_FILE_PATH" | awk '{ print $1 }')"
+    DEST_SHA256="$(sha256sum "$DEST_FILE_PATH" | awk '{ print $1 }')"
 
-    rm -rf "$UMU_PROTON_DIR"
-    mkdir -p "$UMU_PROTON_DIR"
-    cp -r /app/opt/proton/* "$UMU_PROTON_DIR/"
+    if [[ "$SOURCE_SHA256" != "$DEST_SHA256" ]]; then
+      echo "$SOURCE_SHA256 does not match $DEST_SHA256. Updating $DEST_FILE_PATH..."
+
+      mkdir -p "$(dirname "$DEST_FILE_PATH")"
+      cp -r "$SOURCE_FILE_PATH" "$DEST_FILE_PATH"
+    else
+      echo "$SOURCE_SHA256 DOES match $DEST_SHA256. No update needed."
+    fi
+
   else
-    echo "$LOCAL_SHA256 DOES match $FLATPAK_SHA256. No proton ge update needed."
+      echo "$DEST_FILE_PATH does not exist. Copying..."
+      mkdir -p "$(dirname "$DEST_FILE_PATH")"
+      cp -r "$SOURCE_FILE_PATH" "$DEST_FILE_PATH"
   fi
-else
-  mkdir -p "$UMU_PROTON_DIR"
-  cp -r /app/opt/proton/* "$UMU_PROTON_DIR/"
+}
+
+function ensure_latest_dir () {
+  SOURCE_FILE_PATH="$1"
+  DEST_FILE_PATH="$2"
+
+  echo "ensuring $SOURCE_FILE_PATH matches $DEST_FILE_PATH"
+  if [[ -f "$DEST_FILE_PATH" ]]; then
+    SOURCE_SHA256="$(sha256sum "$SOURCE_FILE_PATH" | awk '{ print $1 }')"
+    DEST_SHA256="$(sha256sum "$DEST_FILE_PATH" | awk '{ print $1 }')"
+
+    if [[ "$SOURCE_SHA256" != "$DEST_SHA256" ]]; then
+      echo "$SOURCE_SHA256 does not match $DEST_SHA256. Updating $DEST_FILE_PATH..."
+
+      mkdir -p "$(dirname "$DEST_FILE_PATH")"
+      rm -r "$(dirname "$DEST_FILE_PATH")"
+      cp -r "$(dirname "$SOURCE_FILE_PATH")" "$(dirname "$DEST_FILE_PATH")"
+    else
+      echo "$SOURCE_SHA256 DOES match $DEST_SHA256. No update needed."
+    fi
+
+  else
+      echo "$DEST_FILE_PATH does not exist. Copying..."
+      mkdir -p "$(dirname "$DEST_FILE_PATH")"
+      rm -r "$(dirname "$DEST_FILE_PATH")"
+      cp -r "$(dirname "$SOURCE_FILE_PATH")" "$(dirname "$DEST_FILE_PATH")"
+  fi
+}
+
+ensure_latest_dir "/app/opt/proton/proton" "$UMU_PROTON_DIR" 
+
+# If we are still using wine-ge, migrate to umu proton
+if [[ -z "$XDG_DATA_HOME/prefix" ]]; then
+
+  echo "We are still on wine-ge. Migrating to proton..."
+  umu-run wineboot -u
+  mkdir -p "$WINEPREFIX/umu_prefix/drive_c/Program Files (x86)/Jagex Launcher"
+  cp -r "$XDG_DATA_HOME/prefix/drive_c/Program Files (x86)/Jagex Launcher" "$WINEPREFIX/drive_c/Program Files (x86)/Jagex Launcher" || exit 1
+  mv "$XDG_DATA_HOME/prefix" "$XDG_DATA_HOME/prefix.bk"
+
 fi
 
-if ! [ -f "$jagex_launcher_exe_path" ]; then
+if ! [ -f "$JAGEX_LAUNCHER_EXE_PATH" ]; then
     mkdir tmp
     cd tmp
     python3 /app/bin/jagex-install
@@ -40,10 +87,13 @@ if ! [ -f "$jagex_launcher_exe_path" ]; then
     cp /app/steamdeck-settings.properties "$XDG_DATA_HOME/steamdeck-settings.properties"
 fi
 
+ensure_latest_file "/app/RuneLite.exe" "$JAGEX_LAUNCHER_GAMES_PATH/RuneLite.exe"
+ensure_latest_file "/app/HDOS.exe" "$JAGEX_LAUNCHER_GAMES_PATH/HDOS.exe"
+
 # Make sure the registry has the installation location for runelite.
-WINEDEBUG="-all" umu-run reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\RuneLite Launcher_is1" /v "InstallLocation" /t REG_SZ /d "Z:\app" /f
+WINEDEBUG="-all" umu-run reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\RuneLite Launcher_is1" /v "InstallLocation" /t REG_SZ /d "C:\Program Files (x86)\Jagex Launcher\Games" /f
 
 # Make sure the registry has the installation location for hdos
-WINEDEBUG="-all" umu-run reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\HDOS Launcher_is1" /v "InstallLocation" /t REG_SZ /d "Z:\app" /f
+WINEDEBUG="-all" umu-run reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\HDOS Launcher_is1" /v "InstallLocation" /t REG_SZ /d "C:\Program Files (x86)\Jagex Launcher\Games" /f
 
-umu-run "$jagex_launcher_exe_path"
+umu-run "$JAGEX_LAUNCHER_EXE_PATH"

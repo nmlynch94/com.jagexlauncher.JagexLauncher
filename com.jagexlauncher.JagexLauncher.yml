@@ -39,11 +39,11 @@ sdk-extensions:
 add-extensions:
   org.freedesktop.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
-    version: "46"
+    version: *runtime-version
 
   org.freedesktop.Platform.Compat.i386.Debug:
     directory: lib/debug/lib/i386-linux-gnu
-    version: "46"
+    version: *runtime-version
     no-autodownload: true
 
   org.freedesktop.Platform.GL32:
@@ -130,17 +130,18 @@ modules:
   - name: openjdk
     buildsystem: simple
     build-commands:
+      # https://gitlab.com/hdos/issues/-/issues/2004
       - /usr/lib/sdk/openjdk17/install.sh
       - mv /app/jre/bin/java /app/jre/bin/java.bk
       - mv java /app/jre/bin/java
       - chmod +x /app/jre/bin/java
     sources:
       - type: script
-        dest-filename: java # https://gitlab.com/hdos/issues/-/issues/2004
+        dest-filename: java 
         commands:
           - 
             #!/bin/bash
-          - /app/jre/bin/java.bk $(echo "$@" | sed 's|--add-opens java.desktop/java.awt=ALL-UNNAMED||g')
+          - /run/parent/app/jre/bin/java.bk $(echo "$@" | sed 's|--add-opens java.desktop/java.awt=ALL-UNNAMED||g')
   - name: proton-ge
     buildsystem: simple
     build-commands:
@@ -186,7 +187,7 @@ modules:
           - 
               #!/bin/bash
           - set -x
-          - /app/jre/bin/java.bk -Duser.home="$XDG_DATA_HOME/user_home" -jar /app/RuneLite.jar
+          - /run/parent/app/jre/bin/java.bk -Duser.home="$XDG_DATA_HOME/user_home" -jar /run/parent/app/RuneLite.jar
             -J-Duser.home="$XDG_DATA_HOME/user_home"
   - name: hdos-jar
     buildsystem: simple
@@ -202,13 +203,13 @@ modules:
           type: html
           url: https://cdn.hdos.dev/client/getdown.txt
           version-pattern: launcher.version = (\d.*)
-          url-template: https://cdn.hdos.dev/launcher/v$version/hdos-launcher.jar
+          url-template: https://cdn.hdos.dev/launcher/$version/hdos-launcher.jar
       - type: script
-        dest-filename: HDOS.exe # We name this bash script .exe bc Jagex Launcher runs RuneLite.exe. Wine is able to somehow intepret it is a bash script and run that instead.
+        dest-filename: HDOS.exe
         commands:
           - 
             #!/bin/bash
-          - /app/jre/bin/java -jar /app/hdos-launcher.jar
+          - /run/parent/app/jre/bin/java -jar /run/parent/app/hdos-launcher.jar
   - name: jagex-launcher
     buildsystem: simple
     build-commands:
