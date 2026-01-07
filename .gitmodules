@@ -1,0 +1,3 @@
+[submodule "jagex-launcher-linux"]
+	path = jagex-launcher-linux
+	url = https://github.com/TormStorm/jagex-launcher-linux

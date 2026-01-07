@@ -1,0 +1,60 @@
+#!/bin/sh
+set -euo pipefail
+
+winebin="/app/opt/wine/bin"
+wineprefix="$XDG_DATA_HOME"/staging_prefix
+JAGEX_LAUNCHER_EXE_PATH="$wineprefix/drive_c/Program Files (x86)/Jagex Launcher/JagexLauncher.exe"
+export WINEPREFIX="$wineprefix"
+
+function ensure_latest_file () {
+  SOURCE_FILE_PATH="$1"
+  DEST_FILE_PATH="$2"
+
+  echo "ensuring $SOURCE_FILE_PATH matches $DEST_FILE_PATH"
+  if [[ -f "$DEST_FILE_PATH" ]]; then
+    SOURCE_SHA256="$(sha256sum "$SOURCE_FILE_PATH" | awk '{ print $1 }')"
+    DEST_SHA256="$(sha256sum "$DEST_FILE_PATH" | awk '{ print $1 }')"
+
+    if [[ "$SOURCE_SHA256" != "$DEST_SHA256" ]]; then
+      echo "$SOURCE_SHA256 does not match $DEST_SHA256. Updating $DEST_FILE_PATH..."
+
+      mkdir -p "$(dirname "$DEST_FILE_PATH")"
+      cp -r "$SOURCE_FILE_PATH" "$DEST_FILE_PATH"
+    else
+      echo "$SOURCE_SHA256 DOES match $DEST_SHA256. No update needed."
+    fi
+
+  else
+      echo "$DEST_FILE_PATH does not exist. Copying..."
+      mkdir -p "$(dirname "$DEST_FILE_PATH")"
+      cp -r "$SOURCE_FILE_PATH" "$DEST_FILE_PATH"
+  fi
+}
+
+# If we are still using wine-ge, migrate to umu proton
+if [[ -d "$XDG_DATA_HOME/prefix" ]]; then
+
+  echo "We are still on wine-ge. Migrating to proton..."
+  mv "$XDG_DATA_HOME/prefix" "$XDG_DATA_HOME/prefix.bk"
+
+fi
+
+if ! [ -f "$JAGEX_LAUNCHER_EXE_PATH" ]; then
+    mkdir tmp
+    cd tmp
+    python3 /app/bin/jagex-install
+    cd ..
+    mkdir -p "$wineprefix/drive_c/Program Files (x86)/Jagex Launcher"
+    cp -r ./tmp/* "$wineprefix/drive_c/Program Files (x86)/Jagex Launcher/"
+
+    # Copy steam deck properties file to a location accessible by the flatpak
+    cp /app/steamdeck-settings.properties "$XDG_DATA_HOME/steamdeck-settings.properties"
+fi
+
+# Make sure the registry has the installation location for runelite.
+WINEDEBUG="-all" wine reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\RuneLite Launcher_is1" /v "InstallLocation" /t REG_SZ /d "Z:\app" /f
+
+# Make sure the registry has the installation location for hdos
+WINEDEBUG="-all" wine reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\HDOS Launcher_is1" /v "InstallLocation" /t REG_SZ /d "Z:\app" /f
+
+wine "$JAGEX_LAUNCHER_EXE_PATH"

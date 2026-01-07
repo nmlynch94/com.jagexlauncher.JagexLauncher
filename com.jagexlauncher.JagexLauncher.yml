@@ -1,0 +1,199 @@
+# Versions
+x-gl-version: &gl-version '1.4'
+x-gl-versions: &gl-versions 25.08;1.4
+x-gl-merge-dirs: &gl-merge-dirs vulkan/icd.d;glvnd/egl_vendor.d;OpenCL/vendors;lib/dri;lib/d3d;vulkan/explicit_layer.d;vulkan/implicit_layer.d
+x-runtime-version: &runtime-version '25.08'
+# Flatpak manifest
+app-id: com.jagexlauncher.JagexLauncher
+runtime: org.freedesktop.Platform
+runtime-version: *runtime-version
+sdk: org.freedesktop.Sdk
+command: jagex-run
+finish-args:
+  - --device=dri
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --share=network
+  - --allow=multiarch
+  - --env=JAVA_HOME=/app/jre
+  - --talk-name=org.freedesktop.Notifications
+  - --filesystem=xdg-data/icons:create
+  - --filesystem=xdg-run/app/com.discordapp.Discord
+  - --filesystem=xdg-run/discord-ipc-0
+sdk-extensions:
+  - org.freedesktop.Sdk.Compat.i386
+  - org.freedesktop.Sdk.Extension.openjdk17
+add-extensions:
+  org.freedesktop.Platform.Compat.i386:
+    directory: lib/i386-linux-gnu
+    version: *runtime-version
+
+  org.freedesktop.Platform.GL32:
+    directory: lib/i386-linux-gnu/GL
+    version: *gl-version
+    versions: *gl-versions
+    subdirectories: true
+    no-autodownload: true
+    autodelete: false
+    add-ld-path: lib
+    merge-dirs: *gl-merge-dirs
+    download-if: active-gl-driver
+    enable-if: active-gl-driver
+    autoprune-unless: active-gl-driver
+
+  org.freedesktop.Platform.GL32.Debug:
+    directory: lib/debug/lib/i386-linux-gnu/GL
+    version: *gl-version
+    versions: *gl-versions
+    subdirectories: true
+    no-autodownload: true
+    merge-dirs: *gl-merge-dirs
+    enable-if: active-gl-driver
+    autoprune-unless: active-gl-driver
+
+modules:
+  - name: libnotify
+    buildsystem: meson
+    config-opts:
+      - -Dman=false
+      - -Dgtk_doc=false
+      - -Ddocbook_docs=disabled
+    cleanup:
+      - /include
+      - /lib/pkgconfig
+      - /lib/debug
+      - /lib/girepository-1.0
+      - /share/gtk-doc
+      - /share/gir-1.0
+    sources:
+      - type: git
+        url: https://github.com/GNOME/libnotify.git
+        tag: 0.8.3
+        commit: 6083790f9e0f1827147ecd8799c4dced0e86a877
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      # https://gitlab.com/hdos/issues/-/issues/2004
+      - /usr/lib/sdk/openjdk17/install.sh
+      - mv /app/jre/bin/java /app/jre/bin/java.bk
+      - mv java /app/jre/bin/java
+      - chmod +x /app/jre/bin/java
+    sources:
+      - type: script
+        dest-filename: java 
+        commands:
+          - 
+            #!/bin/bash
+          - /app/jre/bin/java.bk $(echo "$@" | sed 's|--add-opens java.desktop/java.awt=ALL-UNNAMED||g')
+  - name: proton-ge
+    buildsystem: simple
+    build-commands:
+      - mkdir proton
+      - tar xf protonge.tar.xz -C proton --strip-components 1 
+      - install --directory /app/opt
+      - chmod 755 -R proton
+      - mv proton /app/opt/proton
+    sources:
+      - type: file
+        dest-filename: protonge.tar.xz
+        url: https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton10-27/GE-Proton10-27.tar.gz
+        sha512: 7bc683b62a9cdf027089af501c93cf78c7aaef30c70010c54389d199894a679870becfda417ad1761c4d8faa17ac3d2da805d4c4efce8992197eaff74fcb5fea
+  - name: wine-staging
+    buildsystem: simple
+    build-commands:
+      - mkdir -p wine-staging
+      - tar xf wine-staging.tar.xz -C wine-staging --strip-components=1
+      - cp -r wine-staging/bin/* /app/bin/
+      - cp -r wine-staging/lib/* /app/lib/
+      - cp -r wine-staging/share/* /app/share/
+    sources:
+      - type: file
+        url: https://github.com/Kron4ek/Wine-Builds/releases/download/10.18/wine-10.18-staging-amd64.tar.xz
+        dest-filename: wine-staging.tar.xz
+        sha256: 466d24aa919892186fa40c374452dad549092a023fd9ab2efe0c7bfea4b23713
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/Kron4ek/Wine-Builds/releases/latest
+          version-query: .tag_name
+          url-query: .assets[] | select(.name=="wine-" + $version + "-staging-amd64.tar.xz")
+            | .browser_download_url
+  - name: runelite-jar
+    buildsystem: simple
+    build-commands:
+      - mv RuneLite.jar /app/
+      - mv RuneLite.exe /app/
+    sources:
+      - type: file
+        dest-filename: RuneLite.jar
+        url: https://github.com/runelite/launcher/releases/download/2.7.6/RuneLite.jar
+        sha256: 4621843952a4fe3365280d0f0cc1aff360b4eeabf47673c983001c8b62906e33
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/runelite/launcher/releases
+          version-query: first(.[] | select(.assets[] | .name == "RuneLite.jar"))
+            | .tag_name
+          url-query: first(.[] | select(.assets[] | .name == "RuneLite.jar")) .assets[]
+            | select(.name == "RuneLite.jar") | .browser_download_url
+      - type: script
+        dest-filename: RuneLite.exe   # We name this bash script .exe bc Jagex Launcher runs RuneLite.exe. Wine is able to somehow intepret it is a bash script and run that instead.
+        commands:
+          - 
+              #!/bin/bash
+          - set -x
+          - /app/jre/bin/java.bk -Duser.home="$XDG_DATA_HOME/user_home" -jar /app/RuneLite.jar
+            -J-Duser.home="$XDG_DATA_HOME/user_home"
+  - name: hdos-jar
+    buildsystem: simple
+    build-commands:
+      - mv hdos-launcher.jar /app/
+      - mv HDOS.exe /app/
+    sources:
+      - type: file
+        dest-filename: hdos-launcher.jar
+        url: https://cdn.hdos.dev/launcher/v8/hdos-launcher.jar
+        sha256: d3475d791fa8bfa4e3ae7fa9b1c5e86a8e02d1e93f88ff4776582af78ea92fc0
+        x-checker-data:
+          type: html
+          url: https://cdn.hdos.dev/client/getdown.txt
+          version-pattern: launcher.version = (\d.*)
+          url-template: https://cdn.hdos.dev/launcher/$version/hdos-launcher.jar
+      - type: script
+        dest-filename: HDOS.exe
+        commands:
+          - 
+            #!/bin/bash
+          - /app/jre/bin/java -jar /app/hdos-launcher.jar
+  - name: jagex-launcher
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/lib/i386-linux-gnu/GL
+      - mkdir -p /app/lib/debug/lib/i386-linux-gnu
+      - mkdir -p /app/bin
+      - install jagex-install /app/bin/jagex-install
+      - install -Dm644 com.jagexlauncher.JagexLauncher.desktop /app/share/applications/com.jagexlauncher.JagexLauncher.desktop
+      - install -Dm644 com.jagexlauncher.JagexLauncher.metainfo.xml /app/share/metainfo/com.jagexlauncher.JagexLauncher.metainfo.xml
+      - install -Dm644 256.png /app/share/icons/hicolor/256x256/apps/com.jagexlauncher.JagexLauncher.png
+      - install -Dm644 steamdeck-settings.properties /app/steamdeck-settings.properties
+    sources:
+      - type: file
+        path: jagex-launcher-linux/resources/installer.py
+        dest-filename: jagex-install
+      - type: file
+        path: com.jagexlauncher.JagexLauncher.desktop
+      - type: file
+        path: com.jagexlauncher.JagexLauncher.metainfo.xml
+      - type: file
+        path: icons/256/256.png
+      - type: file
+        path: jagex-launcher-linux/resources/steamdeck-settings.properties
+  - name: launch-script
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/bin
+      - install jagex-run /app/bin/jagex-run
+    sources:
+      - type: file
+        dest-filename: jagex-run
+        path: scripts/jagex-run.sh

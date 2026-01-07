@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Jagex Launcher
+GenericName=Jagex Launcher
+Comment=Jagex Launcher
+Icon=com.jagexlauncher.JagexLauncher
+Terminal=false
+Exec=jagex-run
+Categories=Game;
+X-Flatpak-Tags=proprietary;
+X-Flatpak=com.jagexlauncher.JagexLauncher

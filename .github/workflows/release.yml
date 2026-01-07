@@ -1,0 +1,71 @@
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    branches: main
+  workflow_dispatch: # can be manually dispatched under GitHub's "Actions" tab 
+
+name: Create Release
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Get tags
+        run: git fetch --tags origin  
+      - name: Set variables
+        id: variables
+        run: |
+          LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+          MAJOR=$(echo "$LAST_TAG" | cut -d. -f1) 
+          MINOR=$(echo "$LAST_TAG" | cut -d. -f2) 
+          PATCH=$(echo "$LAST_TAG" | cut -d. -f3)
+          NEW_VERSION="$MAJOR.$MINOR.$((PATCH+1))"
+          echo "NEW_TAG=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "APP_NAME=$(basename $(pwd))" >> $GITHUB_OUTPUT   
+      - name: Setup GPG
+        id: import-gpg
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_config_global: true
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+      - name: Install dependencies          
+        run: |
+          DEBIAN_FRONTEND=noninteractive sudo apt-get update -y
+          git config --global protocol.file.allow always
+          sudo apt-get install --no-install-recommends -y \
+            icoutils \
+            flatpak \
+            flatpak-builder \
+            elfutils \
+            rsync \
+            appstream \
+            appstream-compose
+      - name: Build the flatpak bundle
+        run: |
+          chmod +x build.sh
+          ./build.sh
+          flatpak build-bundle ~/.local/share/flatpak/repo ${{ steps.variables.outputs.APP_NAME }}.flatpak ${{ steps.variables.outputs.APP_NAME }}
+          sha256sum ${{ steps.variables.outputs.APP_NAME }}.flatpak > ${{ steps.variables.outputs.APP_NAME }}.flatpak.sha256sum
+      - name: Tag this branch with incremented release version
+        id: new-tag
+        run: |
+          git tag ${{ steps.variables.outputs.NEW_TAG }}
+          git push "https://$GITHUB_ACTOR:${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git" --tags
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ${{ steps.variables.outputs.APP_NAME }}.flatpak
+            ${{ steps.variables.outputs.APP_NAME }}.flatpak.sha256sum
+          tag_name: ${{ steps.variables.outputs.NEW_TAG }}
