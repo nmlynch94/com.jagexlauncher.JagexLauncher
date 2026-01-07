@@ -87,19 +87,6 @@ modules:
           - 
             #!/bin/bash
           - /app/jre/bin/java.bk $(echo "$@" | sed 's|--add-opens java.desktop/java.awt=ALL-UNNAMED||g')
-  - name: proton-ge
-    buildsystem: simple
-    build-commands:
-      - mkdir proton
-      - tar xf protonge.tar.xz -C proton --strip-components 1 
-      - install --directory /app/opt
-      - chmod 755 -R proton
-      - mv proton /app/opt/proton
-    sources:
-      - type: file
-        dest-filename: protonge.tar.xz
-        url: https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton10-27/GE-Proton10-27.tar.gz
-        sha512: 7bc683b62a9cdf027089af501c93cf78c7aaef30c70010c54389d199894a679870becfda417ad1761c4d8faa17ac3d2da805d4c4efce8992197eaff74fcb5fea
   - name: wine-staging
     buildsystem: simple
     build-commands:
