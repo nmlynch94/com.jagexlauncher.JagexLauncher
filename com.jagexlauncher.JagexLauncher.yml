@@ -139,7 +139,7 @@ modules:
     sources:
       - type: file
         dest-filename: hdos-launcher.jar
-        url: https://cdn.hdos.dev/launcher/v8/hdos-launcher.jar
+        url: https://cdn.hdos.dev/launcher/latest/hdos-launcher.jar
         sha256: d3475d791fa8bfa4e3ae7fa9b1c5e86a8e02d1e93f88ff4776582af78ea92fc0
         x-checker-data:
           type: html
