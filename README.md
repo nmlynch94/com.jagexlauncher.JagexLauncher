@@ -29,6 +29,10 @@ curl -fSsL https://raw.githubusercontent.com/nmlynch94/com.jagexlauncher.JagexLa
 - `cd icons && ./extract_icons.sh && cd ..`
 - `flatpak-builder --install-deps-from=flathub --user --install --force-clean build-dir com.jagexlauncher.JagexLauncher.yml`
 
+### Known Issues
+- Dropdown menus in the launcher don't work in wine 10+. Click on the dropdown, then use arrow keys to select.
+- On some hardware configurations, the RS3 launcher will show as a black screen. Right clicking will reveal it, and all the buttons will still work. Navigate using this trick and then it works fine once in game.
+
 ### If you have a steam deck
 - Follow one of the methods above, then simply right click on the icon in the Application Menu and choose to create a steam shortcut. Then, you will be able to launch it in Game Mode.
 - You may want to rename your shortcut to whatever you normally play (e.g. RuneLite, RuneScape, OSRS) because the way the deck searches community control schemes is by matching your game's name.
