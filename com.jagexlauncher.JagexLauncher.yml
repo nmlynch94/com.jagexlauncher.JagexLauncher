@@ -10,15 +10,26 @@ runtime-version: *runtime-version
 sdk: org.freedesktop.Sdk
 command: jagex-run
 finish-args:
-  - --device=dri
+# pressure vessel
+  - --device=all
+  - --env=PATH=/app/bin:/app/utils/bin:/usr/bin:/usr/lib/extensions/vulkan/MangoHud/bin:/usr/lib/extensions/vulkan/gamescope/bin:/usr/lib/extensions/vulkan/OBSVkCapture/bin:/app/bin/heroic/resources/app.asar.unpacked/build/bin/linux
+  - --env=LD_LIBRARY_PATH=/usr/lib/extensions/vulkan/gamescope/lib
+  - --persist=Games
+  - --persist=.local
+  - --filesystem=xdg-run/gamescope-0:rw
+  # See: https://github.com/flathub/com.valvesoftware.Steam/commit/0538256facdb0837c33232bc65a9195a8a5bc750
+  - --env=XDG_DATA_DIRS=/app/share:/usr/lib/extensions/vulkan/share:/usr/share:/usr/share/runtime/share:/run/host/user-share:/run/host/share:/usr/lib/pressure-vessel/overrides/share
+  - --allow=per-app-dev-shm
+  # umu
   - --share=ipc
   - --socket=x11
   - --socket=wayland
   - --socket=pulseaudio
   - --share=network
+  - --allow=devel
   - --allow=multiarch
-  - --env=JAVA_HOME=/app/jre
   - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.freedesktop.Flatpak
   - --filesystem=xdg-data/icons:create
   - --filesystem=xdg-run/app/com.discordapp.Discord
   - --filesystem=xdg-run/discord-ipc-0
@@ -87,25 +98,30 @@ modules:
           - 
             #!/bin/bash
           - /app/jre/bin/java.bk $(echo "$@" | sed 's|--add-opens java.desktop/java.awt=ALL-UNNAMED||g')
-  - name: wine-staging
+  - name: proton-ge
     buildsystem: simple
     build-commands:
-      - mkdir -p wine-staging
-      - tar xf wine-staging.tar.xz -C wine-staging --strip-components=1
-      - cp -r wine-staging/bin/* /app/bin/
-      - cp -r wine-staging/lib/* /app/lib/
-      - cp -r wine-staging/share/* /app/share/
+      - mkdir proton
+      - tar xf protonge.tar.xz -C proton --strip-components 1 
+      - install --directory /app/opt
+      - chmod 755 -R proton
+      - mv proton /app/opt/proton
     sources:
       - type: file
-        url: https://github.com/Kron4ek/Wine-Builds/releases/download/10.18/wine-10.18-staging-amd64.tar.xz
-        dest-filename: wine-staging.tar.xz
-        sha256: 466d24aa919892186fa40c374452dad549092a023fd9ab2efe0c7bfea4b23713
-        x-checker-data:
-          type: json
-          url: https://api.github.com/repos/Kron4ek/Wine-Builds/releases/latest
-          version-query: .tag_name
-          url-query: .assets[] | select(.name=="wine-" + $version + "-staging-amd64.tar.xz")
-            | .browser_download_url
+        dest-filename: protonge.tar.xz
+        url: https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton10-25/GE-Proton10-25.tar.gz
+        sha512: 1e2804cd15d50fa470cbcb9112ede1f0d9fc08b40043ebac1b35f81a9e4c588e2cc62df53dbe3beee426771c5b0f293ece76c8a65c7da54476ada8a70e1d7b52
+
+  # --- umu ---
+  - name: umu-run
+    buildsystem: simple
+    build-commands:
+      - |
+        install umu-run /app/bin/umu-run
+    sources:
+      - type: archive
+        url: https://github.com/Open-Wine-Components/umu-launcher/releases/download/1.3.0/umu-launcher-1.3.0-zipapp.tar
+        sha256: 36502de766f3cc549ff85196a04fb5afdb4eb2a72c023f22fd25895df91fda2f
   - name: runelite-jar
     buildsystem: simple
     build-commands:
