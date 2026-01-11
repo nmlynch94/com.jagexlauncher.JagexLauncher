@@ -17,7 +17,7 @@ curl -fSsL https://raw.githubusercontent.com/nmlynch94/com.jagexlauncher.JagexLa
 ### Release Bundle (no automated updates) - This option will be going away once the repo option is proven to be stable
 - Here is a one liner to make sure all dependencies are installed and also install the latest release. This will likely take several minutes if flatpak is newly installed NOTE: First launch installs the launcher. It may appear to be doing nothing for a minute or two until it appears. It will be faster after that.
 ```
-curl -fSsL https://raw.githubusercontent.com/nmlynch94/com.jagexlauncher.JagexLauncher/main/install-jagex-launcher-bundle.sh | bash
+curl -fSsL https://raw.githubusercontent.com/nmlynch94/com.jagexlauncher.JagexLauncher/refs/heads/release-bundle/install-jagex-launcher-bundle.sh | bash
 ```
 - The Jagex Launcher will now show in your application menu or you can run with `flatpak run com.jagexlauncher.JagexLauncher`
 - NOTE: The first run will take a bit due to the installation script.
