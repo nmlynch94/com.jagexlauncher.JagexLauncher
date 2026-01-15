@@ -24,6 +24,7 @@ curl -fSsL https://raw.githubusercontent.com/nmlynch94/com.jagexlauncher.JagexLa
 - To update, run the above script again
 
 ### Build Locally (no automated updates)
+- Dependencies: [flatpak-builder](https://docs.flatpak.org/en/latest/flatpak-builder.html), [icoutils](https://www.nongnu.org/icoutils/), [imagemagick](https://imagemagick.org/#gsc.tab=0)
 - Clone the repo with submodules `git clone --recurse-submodules https://github.com/nmlynch94/com.jagexlauncher.JagexLauncher.git`
 - `cd com.jagexlauncher.JagexLauncher`
 - `cd icons && ./extract_icons.sh && cd ..`
