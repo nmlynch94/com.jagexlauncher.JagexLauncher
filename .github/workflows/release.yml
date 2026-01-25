@@ -52,6 +52,7 @@ jobs:
             imagemagick
       - name: Build the flatpak bundle
         run: |
+          flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
           flatpak-builder --install-deps-from=flathub --user --install --force-clean build-dir --disable-cache ${{ steps.variables.outputs.APP_NAME }}.yml
           sha256sum ${{ steps.variables.outputs.APP_NAME }}.flatpak > ${{ steps.variables.outputs.APP_NAME }}.flatpak.sha256sum
       - name: Tag this branch with incremented release version
