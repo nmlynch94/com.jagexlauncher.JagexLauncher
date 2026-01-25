@@ -1,7 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 set -euo pipefail
 
-winebin="/app/opt/wine/bin"
 wineprefix="$XDG_DATA_HOME"/umu_prefix
 JAGEX_LAUNCHER_EXE_PATH="$wineprefix/drive_c/Program Files (x86)/Jagex Launcher/JagexLauncher.exe"
 JAGEX_LAUNCHER_GAMES_PATH="$(dirname "$JAGEX_LAUNCHER_EXE_PATH")/Games"
@@ -10,7 +9,7 @@ export UMU_PROTON_DIR="$HOME/.var/app/com.jagexlauncher.JagexLauncher/.local/sha
 export PROTONPATH="$HOME/.local/share/umu/proton-bundled/proton"
 export WINEPREFIX="$wineprefix"
 
-function ensure_latest_file () {
+ensure_latest_file () {
   SOURCE_FILE_PATH="$1"
   DEST_FILE_PATH="$2"
 
@@ -35,7 +34,7 @@ function ensure_latest_file () {
   fi
 }
 
-function ensure_latest_dir () {
+ensure_latest_dir () {
   SOURCE_FILE_PATH="$1"
   DEST_FILE_PATH="$2"
 
@@ -65,7 +64,7 @@ function ensure_latest_dir () {
 ensure_latest_dir "/app/opt/proton" "$HOME/.local/share/umu/proton-bundled/proton"
 
 # If we are still using wine-ge, migrate to umu proton
-if [[ -z "$XDG_DATA_HOME/prefix" ]]; then
+if [[ -d "$XDG_DATA_HOME/prefix" ]]; then
 
   echo "We are still on wine-ge. Migrating to proton..."
   umu-run wineboot -u
@@ -96,4 +95,4 @@ WINEDEBUG="-all" umu-run reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Windo
 # Make sure the registry has the installation location for hdos
 WINEDEBUG="-all" umu-run reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\HDOS Launcher_is1" /v "InstallLocation" /t REG_SZ /d "C:\Program Files (x86)\Jagex Launcher\Games" /f
 
-umu-run "$JAGEX_LAUNCHER_EXE_PATH"
+STEAM_COMPAT_LIBRARY_PATHS="/app" umu-run "$JAGEX_LAUNCHER_EXE_PATH"

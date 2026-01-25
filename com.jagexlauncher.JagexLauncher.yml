@@ -97,7 +97,7 @@ modules:
         commands:
           - 
             #!/bin/bash
-          - /app/jre/bin/java.bk $(echo "$@" | sed 's|--add-opens java.desktop/java.awt=ALL-UNNAMED||g')
+          - /run/parent/app/jre/bin/java.bk $(echo "$@" | sed 's|--add-opens java.desktop/java.awt=ALL-UNNAMED||g')
   - name: proton-ge
     buildsystem: simple
     build-commands:
@@ -145,7 +145,7 @@ modules:
           - 
               #!/bin/bash
           - set -x
-          - /app/jre/bin/java.bk -Duser.home="$XDG_DATA_HOME/user_home" -jar /app/RuneLite.jar
+          - /run/parent/app/jre/bin/java.bk -Duser.home="$XDG_DATA_HOME/user_home" -jar /run/parent/app/RuneLite.jar
             -J-Duser.home="$XDG_DATA_HOME/user_home"
   - name: hdos-jar
     buildsystem: simple
@@ -162,7 +162,7 @@ modules:
         commands:
           - 
             #!/bin/bash
-          - /app/jre/bin/java -jar /app/hdos-launcher.jar
+          - /run/parent/app/jre/bin/java -jar /run/parent/app/hdos-launcher.jar
   - name: jagex-launcher
     buildsystem: simple
     build-commands:
