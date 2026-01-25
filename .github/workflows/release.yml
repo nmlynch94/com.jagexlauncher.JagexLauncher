@@ -58,6 +58,7 @@ jobs:
           cd ..
           flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
           flatpak-builder --install-deps-from=flathub --user --install --force-clean build-dir --disable-cache ${{ steps.variables.outputs.APP_NAME }}.yml
+          flatpak build-bundle ~/.local/share/flatpak/repo ${{ steps.variables.outputs.APP_NAME }}.flatpak ${{ steps.variables.outputs.APP_NAME }}
           sha256sum ${{ steps.variables.outputs.APP_NAME }}.flatpak > ${{ steps.variables.outputs.APP_NAME }}.flatpak.sha256sum
       - name: Tag this branch with incremented release version
         id: new-tag
