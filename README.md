@@ -4,6 +4,8 @@ If you have any questions, Torm's Discord is the best place for this https://dis
 
 # Installation Methods. Choose One Only.
 
+## NOTE: There is currently an issue where the dropdown menu does not work properly for the osrs clients. It's invisible so if you click it, you can use the arrow keys to select the launcher as a workaround until hopefully a newer version of wine fixes it.
+
 ### Repo (automated updates) - If you don't understand the other sections, this below command is the only one you need to run to get the launcher running.
 - Open a terminal (konsole, etc)
 - Run 
